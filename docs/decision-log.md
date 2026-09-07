@@ -297,6 +297,7 @@ Original:
 - **Date:** 2026-09-07
 - **Impact:** All references to Forward are now canonical. Pre-App-Store checklist adds: trademark search + App Store name availability check. If either fails at submission time, we revisit with the option value of already having built the product. Closes Q-001.
 
+### D-043 — *(accent colour superseded by D-065, 2026-09-07)*
 ### D-043 — Design System: "Apple language, spoken confidently" (Fitness/Weather reference, not Settings)
 - **Decision:** Forward's visual language uses Apple's system components, Dynamic Type, semantic colors, SF Symbols, and standard interaction patterns — but with the visual richness of Fitness / Weather, NOT the utilitarianism of Settings / Notes / Reminders. This means: purposeful gradients (subtle, meaningful), hero rounded-numeric displays for headline stats, muscle-group-tinted card backgrounds, subtle shadows, richer motion, and generous use of `Material` on ambient surfaces. Full spec in `docs/04-design-system.md`.
 - **Why:** User pushed back on 2026-09-07 that the initial design-system draft leaned too utilitarian ("just because it's Apple-first doesn't mean it should look like Settings"). Fitness and Weather demonstrate that Apple-native ≠ plain; both use gradients, hero numbers, and tinted surfaces while remaining unmistakably iOS.
@@ -417,6 +418,17 @@ Original:
   - Two mistakes worth recording, both caught by building rather than reading. **`$(VAR)` must be quoted in `pbxproj`** — the old-style plist parser treats bare `$` and parentheses as a syntax error, and Xcode then reports only "Unable to read project", which points nowhere near the cause. **An `#include?` must come *after* the defaults it overrides**, since the last assignment wins in an xcconfig; placed first, the placeholders silently overwrote the local values and signing failed with "requires a development team" despite the team being set.
   - The xcconfig is attached to the two **project-level** build configurations, not the app target's, so the test targets inherit the same variables. Their bundle ids derive as `$(FORWARD_BUNDLE_ID)Tests` / `UITests`.
   - `docs/` stays in the repository. It contains design documents, not development-session transcripts; the decision log is the most useful artifact here for anyone trying to understand the codebase.
+
+### D-065 — Accent colour is sampled from the app icon · Supersedes the accent clause of D-043
+- **Decision:** The accent is a steel blue taken from the app icon: `#2B6CA8` in light, `#82B6E4` in dark. `Brand` exposes the icon's full sampled palette — background ramp `#1B1F23 → #1B2A3A → #133356 → #103A68`, artwork `#EDF2FA` and `#A8BCD3` — plus `Brand.iconGradient` for hero surfaces. The warm orange `#F97316` from D-043 is withdrawn.
+- **Why:** The icon is the app's cover, and it is unambiguously a cool, dark, steel-blue object — a pale chevron over a charcoal-to-blue gradient. An orange interior behind a blue cover reads as two products. The author asked for the app to look like its icon, which settles it: the icon exists, the accent was a proposal.
+- **Alternatives:** Keep the orange and treat the icon as a separate mark; redraw the icon in orange; pick a neutral accent that argues with neither.
+- **Why not:** Two identities is the problem being fixed. Redrawing the icon discards finished artwork to protect an untested colour proposal. A neutral accent gives up the identity both candidates were trying to establish.
+- **Date:** 2026-09-07
+- **Impact:** Colours are *sampled* from `Icon-iOS-Default-1024x1024@1x.png` rather than eyeballed, so the app and its icon are provably the same object; `Brand` records the source file. Verified in the Simulator in both appearances.
+  - D-043's warning that the accent should not be "Apple's default blue, already every app's tint" still stands and is not dismissed by this. The chosen blue shares Apple's hue (~211°) but at materially lower saturation — steel rather than vivid — so it reads as this icon's blue and not as an untouched system default. Worth re-examining on a real device against other apps' tints.
+  - The `MuscleTint` palette stays warm and varied. Those colours differentiate muscle groups; they aren't brand, and cooling them all would cost the differentiation that earns them their place (D-043 §2).
+  - `Brand.iconGradient` is defined but not yet applied anywhere. It's the obvious candidate for the End Workout summary hero and a launch screen; neither is built yet.
 
 ### D-052 — Set completion advances focus to the next set's weight field
 - **Decision:** Tapping a set's complete button moves keyboard focus to the *next* unlogged, non-skipped set's weight field. When no sets remain, focus drops and the next exercise with remaining sets expands and scrolls into view. Focus state lives on `ExpandedExerciseSection` (shared `@FocusState<SetFieldFocus?>` passed into each `WorkSetRow` as a binding), not inside the row.
