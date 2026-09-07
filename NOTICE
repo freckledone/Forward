@@ -1,0 +1,21 @@
+Forward
+Copyright (c) 2026 Yuri Gurgenidze
+Licensed under the MIT License. See LICENSE.
+
+--------------------------------------------------------------------------------
+Third-party content
+--------------------------------------------------------------------------------
+
+Forward/Resources/exercises.json
+
+  Derived from Free Exercise DB
+  https://github.com/yuhonas/free-exercise-db
+
+  Released into the public domain under the Unlicense (https://unlicense.org).
+  No attribution is legally required; it is given here because the work is
+  worth crediting.
+
+  Entries were transformed into Forward's schema by
+  scripts/transform-exercises.py and then hand-corrected for display names,
+  aliases, and primary-muscle assignments. Exercise images from the source
+  data set are not bundled.

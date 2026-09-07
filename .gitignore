@@ -60,3 +60,23 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
+
+## Added for Forward
+
+# macOS
+.DS_Store
+
+# Xcode build output and per-user editor state
+DerivedData/
+build/
+*.xcuserstate
+
+# Claude Code session data (machine-local; the decision log in docs/ is the
+# durable record of how this project was built)
+.claude/
+
+# Personal Apple Developer identifiers (team, bundle id, CloudKit container)
+Config/Local.xcconfig
+
+# The author's actual training program — useful locally, not for publication
+docs/seed-templates-reference.json
