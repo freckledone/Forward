@@ -49,7 +49,11 @@ struct ActiveWorkoutView: View {
                     for: currentPrimaryMuscle,
                     colorScheme: colorScheme
                 )
-                .opacity(0.35)
+                // The ambient background is the only thing carrying the
+                // muscle tint now. The expanded card stays neutral, so weights
+                // and reps sit on a plain surface — mid-set you need the
+                // numbers legible, not decorated.
+                .opacity(0.7)
                 .ignoresSafeArea()
                 .animation(.easeInOut(duration: 0.4), value: currentPrimaryMuscle)
 

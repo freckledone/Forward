@@ -73,10 +73,10 @@ struct ExerciseDetailView: View {
             }
             .padding(.vertical, 4)
             .listRowBackground(
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                RoundedRectangle(cornerRadius: CornerRadius.medium, style: .continuous)
                     .fill(Color(uiColor: .secondarySystemGroupedBackground))
                     .overlay {
-                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        RoundedRectangle(cornerRadius: CornerRadius.medium, style: .continuous)
                             .fill(MuscleTint.cardGradient(for: primaryMuscle, colorScheme: colorScheme))
                     }
             )

@@ -82,7 +82,7 @@ struct ExpandedExerciseSection: View {
         .padding(.vertical, 16)
         .padding(.horizontal, 12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .cardSurface(tint: primaryMuscle)
+        .cardSurface()
         .sheet(isPresented: $swapPresented) {
             ExercisePicker { picked in
                 swap(to: picked)

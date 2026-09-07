@@ -34,6 +34,9 @@ struct EndWorkoutSummary: View {
         return "\(hours) h \(rem) min"
     }
 
+    /// Logged sets only, never "18 of 24" — per D-057, a ratio invites
+    /// reading a plan you adjusted mid-session as a failure. That reasoning
+    /// applies more in the minute after training, not less.
     private var completedSetsCount: Int {
         let exercises = session.exercises ?? []
         return exercises.reduce(0) { acc, se in
@@ -41,10 +44,6 @@ struct EndWorkoutSummary: View {
         }
     }
 
-    private var totalSetsCount: Int {
-        let exercises = session.exercises ?? []
-        return exercises.reduce(0) { $0 + ($1.sets ?? []).count }
-    }
 
     var body: some View {
         NavigationStack {
@@ -131,7 +130,7 @@ struct EndWorkoutSummary: View {
     private var statsRow: some View {
         HStack(spacing: 12) {
             statCard(value: durationString, label: "Duration")
-            statCard(value: "\(completedSetsCount)/\(totalSetsCount)", label: "Sets")
+            statCard(value: "\(completedSetsCount)", label: "Sets")
         }
     }
 
@@ -147,7 +146,7 @@ struct EndWorkoutSummary: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(16)
         .background {
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
+            RoundedRectangle(cornerRadius: CornerRadius.medium, style: .continuous)
                 .fill(Color(uiColor: .secondarySystemGroupedBackground))
         }
     }
@@ -191,7 +190,7 @@ struct EndWorkoutSummary: View {
         }
         .padding(14)
         .background {
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
+            RoundedRectangle(cornerRadius: CornerRadius.medium, style: .continuous)
                 .fill(Color.accentColor.opacity(0.10))
         }
     }
@@ -215,7 +214,7 @@ struct EndWorkoutSummary: View {
             .lineLimit(3...6)
             .padding(14)
             .background {
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                RoundedRectangle(cornerRadius: CornerRadius.medium, style: .continuous)
                     .fill(Color(uiColor: .secondarySystemGroupedBackground))
             }
         }

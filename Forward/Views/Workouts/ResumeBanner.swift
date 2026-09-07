@@ -44,7 +44,7 @@ struct ResumeBanner: View {
             }
             .padding(14)
             .background {
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                RoundedRectangle(cornerRadius: CornerRadius.medium, style: .continuous)
                     .fill(Color.accentColor.opacity(0.08))
             }
         }

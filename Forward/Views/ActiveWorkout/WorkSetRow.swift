@@ -66,12 +66,12 @@ struct WorkSetRow: View {
         .padding(.vertical, 10)
         .padding(.horizontal, 10)
         .background {
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
+            RoundedRectangle(cornerRadius: CornerRadius.small, style: .continuous)
                 .fill(rowBackground)
         }
         .opacity(isSkipped ? 0.45 : 1.0)
         .overlay {
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
+            RoundedRectangle(cornerRadius: CornerRadius.small, style: .continuous)
                 .strokeBorder(Color.accentColor, lineWidth: 2)
                 .opacity(isCurrent ? 1 : 0)
         }

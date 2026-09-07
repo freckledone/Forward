@@ -87,7 +87,7 @@ struct SessionRow: View {
         }
         .frame(width: 46, height: 46)
         .background {
-            RoundedRectangle(cornerRadius: 13, style: .continuous)
+            RoundedRectangle(cornerRadius: CornerRadius.small, style: .continuous)
                 .fill(
                     isToday
                         ? Color.accentColor.opacity(0.14)

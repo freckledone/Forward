@@ -30,26 +30,23 @@ struct ProgressRoot: View {
 
     // MARK: - Empty state
 
+    /// `ContentUnavailableView` centers itself and has an `actions` slot. The
+    /// old version wrapped it in a ScrollView and faked centering with a 320pt
+    /// minimum height, which breaks down at large Dynamic Type. This also
+    /// matches the empty state on Workouts.
     private var emptyState: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                ContentUnavailableView {
-                    Label("No key lifts starred", systemImage: "star")
-                } description: {
-                    Text("Star an exercise to see progress here.")
-                }
-                .frame(minHeight: 320)
-
-                NavigationLink {
-                    ExerciseBrowser()
-                } label: {
-                    Label("Browse Exercises", systemImage: "list.bullet.rectangle")
-                        .fontWeight(.medium)
-                }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
+        ContentUnavailableView {
+            Label("No key lifts starred", systemImage: "star")
+        } description: {
+            Text("Star an exercise to see progress here.")
+        } actions: {
+            NavigationLink {
+                ExerciseBrowser()
+            } label: {
+                Text("Browse Exercises")
             }
-            .padding(24)
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
         }
     }
 
@@ -63,7 +60,7 @@ struct ProgressRoot: View {
                         ExerciseDetailView(exercise: exercise)
                     } label: {
                         ProgressCard(exercise: exercise)
-                            .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                            .contentShape(RoundedRectangle(cornerRadius: CornerRadius.card, style: .continuous))
                     }
                     .buttonStyle(.plain)
                 }
@@ -82,7 +79,7 @@ struct ProgressRoot: View {
                     .padding(.vertical, 14)
                     .padding(.horizontal, 18)
                     .background {
-                        RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        RoundedRectangle(cornerRadius: CornerRadius.medium, style: .continuous)
                             .fill(Color(uiColor: .secondarySystemGroupedBackground))
                     }
                 }
