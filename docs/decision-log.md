@@ -430,6 +430,22 @@ Original:
   - The `MuscleTint` palette stays warm and varied. Those colours differentiate muscle groups; they aren't brand, and cooling them all would cost the differentiation that earns them their place (D-043 §2).
   - `Brand.iconGradient` is defined but not yet applied anywhere. It's the obvious candidate for the End Workout summary hero and a launch screen; neither is built yet.
 
+### D-066 — Destructive confirmations are alerts, not confirmation dialogs
+- **Decision:** Every destructive confirmation — delete workout, delete logged session, discard in-progress workout — uses `.alert` rather than `.confirmationDialog`.
+- **Why:** On iOS 26 `confirmationDialog` presents as a popover tethered to a source view. Raised from inside a `Form`, it anchors to whatever happens to be nearby rather than to the button that triggered it: observed pointing its callout tail at the tint picker while the trigger sat at the bottom of the screen. The narrow popover also wrapped the title mid-phrase. An alert is centered and modal by definition, which is what a destructive confirmation wants regardless of the bug.
+- **Alternatives:** Keep `confirmationDialog` and find an anchor that behaves; wrap the trigger in something that gives the popover a sane source; ship as-is.
+- **Why not:** The anchor is chosen by the system, so "find a better one" is guesswork that a future iOS can undo. Adding a wrapper view purely to steer a popover is scaffolding for a presentation detail.
+- **Date:** 2026-09-08
+- **Impact:** Buttons shorten to "Delete" / "Discard" — an alert already states the object in its title, so repeating it in the button was redundant in a narrower layout. `titleVisibility` goes away; alerts always show their title. This supersedes the mechanism, not the placement decision: destructive actions still live at the bottom of the screen they act on rather than in an overflow menu.
+
+### D-067 — Exercise rows: swipe for Edit, Swap, Delete
+- **Decision:** Swiping an exercise row left in the workout editor reveals Edit, Swap, and Delete. Full swipe stays disabled. The row's inline sets/reps disclosure state moves from `WorkoutExerciseRow` to `WorkoutEditor`, so the swipe action can open the same panel a tap does.
+- **Why:** Editing was tap-only on a `DisclosureGroup` whose sole affordance is a small chevron; swap did not exist at all, so changing a movement meant deleting it and re-adding, losing its position, set count and rep range. Grouping all three row actions in one tray makes the row's full capability visible in one gesture.
+- **Alternatives:** Leave Edit out since tapping already does it; put Edit on the leading edge; allow full swipe.
+- **Why not:** "Tap already does it" is true and still leaves the capability invisible next to two actions that advertise themselves. Splitting related row actions across opposite edges makes both harder to find, and the leading edge conventionally means a positive/completion action. Full swipe next to a destructive button turns a fast flick into a deletion — the same hazard that removed swipe-to-delete from Home.
+- **Date:** 2026-09-08
+- **Impact:** `WorkoutExerciseRow.expanded` becomes a `@Binding`; the editor holds a `Set<UUID>` of open rows. Editing a workout's exercise only repoints `exerciseId`, keeping position, set count and rep range — unlike a mid-session swap (D-053) there is no logged data to invalidate.
+
 ### D-052 — Set completion advances focus to the next set's weight field
 - **Decision:** Tapping a set's complete button moves keyboard focus to the *next* unlogged, non-skipped set's weight field. When no sets remain, focus drops and the next exercise with remaining sets expands and scrolls into view. Focus state lives on `ExpandedExerciseSection` (shared `@FocusState<SetFieldFocus?>` passed into each `WorkSetRow` as a binding), not inside the row.
 - **Why:** Real-workout feedback: completing a set left the keyboard parked on the set just finished, so every set cost an extra tap to re-target. Logging should be tap-check, type, tap-check, type.

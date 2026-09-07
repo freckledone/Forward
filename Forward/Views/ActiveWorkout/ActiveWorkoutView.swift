@@ -119,12 +119,8 @@ struct ActiveWorkoutView: View {
                     }
                 }
             }
-            .confirmationDialog(
-                "Discard this workout?",
-                isPresented: $confirmDiscard,
-                titleVisibility: .visible
-            ) {
-                Button("Discard Workout", role: .destructive) {
+            .alert("Discard this workout?", isPresented: $confirmDiscard) {
+                Button("Discard", role: .destructive) {
                     onDiscard()
                 }
                 Button("Cancel", role: .cancel) {}

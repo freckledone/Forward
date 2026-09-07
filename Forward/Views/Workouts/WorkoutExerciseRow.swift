@@ -3,15 +3,18 @@ import SwiftUI
 /// A row in the WorkoutEditor showing one exercise's name and its
 /// sets × rep-range target.
 ///
-/// Tap the row to reveal an inline picker panel with accent-tinted pill
-/// menus for Sets, Reps min, and Reps max — the modern iOS pattern (Menu
-/// pickers rather than steppers). Rep range is stored as min + max per
-/// D-039; when equal, the UI collapses to a single number.
+/// Tap the row — or use the Edit swipe action — to reveal an inline picker
+/// panel with accent-tinted pill menus for Sets, Reps min, and Reps max: the
+/// modern iOS pattern (Menu pickers rather than steppers). Rep range is stored
+/// as min + max per D-039; when equal, the UI collapses to a single number.
+///
+/// Expansion state lives in the parent, because a swipe action sits outside
+/// this view and still has to open it.
 struct WorkoutExerciseRow: View {
     @Bindable var workoutExercise: WorkoutExercise
     @Environment(ExerciseCatalog.self) private var catalog
 
-    @State private var expanded = false
+    @Binding var expanded: Bool
 
     private var exerciseName: String {
         catalog.exercise(withId: workoutExercise.exerciseId)?.name ?? "Unknown exercise"

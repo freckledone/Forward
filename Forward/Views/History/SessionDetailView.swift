@@ -71,12 +71,8 @@ struct SessionDetailView: View {
         .listStyle(.insetGrouped)
         .navigationTitle(session.workoutNameSnapshot ?? "Workout")
         .navigationBarTitleDisplayMode(.inline)
-        .confirmationDialog(
-            "Delete this workout?",
-            isPresented: $confirmDelete,
-            titleVisibility: .visible
-        ) {
-            Button("Delete Workout", role: .destructive) {
+        .alert("Delete this workout?", isPresented: $confirmDelete) {
+            Button("Delete", role: .destructive) {
                 delete()
             }
             Button("Cancel", role: .cancel) {}

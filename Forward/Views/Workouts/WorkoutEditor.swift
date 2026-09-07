@@ -16,6 +16,8 @@ struct WorkoutEditor: View {
 
     @State private var picker: PickerMode?
     @State private var confirmDelete = false
+    /// Which rows have their inline sets/reps editor open.
+    @State private var expandedExercises: Set<UUID> = []
 
     /// One sheet, two jobs. Two `.sheet` modifiers on the same view is a
     /// coin-flip over which one wins, so the mode is modelled instead.
@@ -81,12 +83,17 @@ struct WorkoutEditor: View {
                 }
             }
         }
-        .confirmationDialog(
+        // An alert, not a confirmationDialog: iOS 26 presents the latter as a
+        // popover tethered to a source view, and with the trigger in a Form it
+        // anchors to whatever is nearby rather than to the button — so it
+        // reads as floating loose in the middle of the screen. An alert is
+        // centered and modal by definition, which is what a destructive
+        // confirmation wants anyway.
+        .alert(
             "Delete \"\(workout.name.isEmpty ? "this workout" : workout.name)\"?",
-            isPresented: $confirmDelete,
-            titleVisibility: .visible
+            isPresented: $confirmDelete
         ) {
-            Button("Delete Workout", role: .destructive) {
+            Button("Delete", role: .destructive) {
                 deleteWorkout()
             }
             Button("Cancel", role: .cancel) {}
@@ -104,7 +111,10 @@ struct WorkoutEditor: View {
                     .foregroundStyle(.secondary)
             } else {
                 ForEach(orderedExercises) { we in
-                    WorkoutExerciseRow(workoutExercise: we)
+                    WorkoutExerciseRow(
+                        workoutExercise: we,
+                        expanded: expansionBinding(for: we)
+                    )
                         // Full swipe is off deliberately: with a destructive
                         // action in the tray, a fast flick would delete an
                         // exercise the user meant to swap.
@@ -121,6 +131,13 @@ struct WorkoutEditor: View {
                                 Label("Swap", systemImage: "arrow.triangle.2.circlepath")
                             }
                             .tint(Color.accentColor)
+
+                            Button {
+                                withAnimation { toggleExpansion(we) }
+                            } label: {
+                                Label("Edit", systemImage: "slider.horizontal.3")
+                            }
+                            .tint(.secondary)
                         }
                 }
                 .onDelete { offsets in
@@ -140,7 +157,7 @@ struct WorkoutEditor: View {
             Text("Exercises")
         } footer: {
             if !orderedExercises.isEmpty {
-                Text("Tap a row to edit sets and rep range. Swipe left to swap the exercise or remove it.")
+                Text("Tap a row to edit sets and rep range. Swipe left to edit, swap, or remove it.")
                     .font(.footnote)
             }
         }
@@ -159,6 +176,26 @@ struct WorkoutEditor: View {
                 Text("Delete Workout")
                     .frame(maxWidth: .infinity, alignment: .center)
             }
+        }
+    }
+
+    // MARK: - Expansion
+
+    private func expansionBinding(for we: WorkoutExercise) -> Binding<Bool> {
+        Binding(
+            get: { expandedExercises.contains(we.id) },
+            set: { isOpen in
+                if isOpen { expandedExercises.insert(we.id) }
+                else { expandedExercises.remove(we.id) }
+            }
+        )
+    }
+
+    private func toggleExpansion(_ we: WorkoutExercise) {
+        if expandedExercises.contains(we.id) {
+            expandedExercises.remove(we.id)
+        } else {
+            expandedExercises.insert(we.id)
         }
     }
 
