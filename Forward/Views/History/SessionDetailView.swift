@@ -66,34 +66,22 @@ struct SessionDetailView: View {
             ForEach(orderedExercises) { se in
                 exerciseSection(for: se)
             }
+            deleteSection
         }
         .listStyle(.insetGrouped)
         .navigationTitle(session.workoutNameSnapshot ?? "Workout")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Menu {
-                    Button(role: .destructive) {
-                        confirmDelete = true
-                    } label: {
-                        Label("Delete Workout", systemImage: "trash")
-                    }
-                } label: {
-                    Image(systemName: "ellipsis.circle")
-                }
-            }
-        }
         .confirmationDialog(
             "Delete this workout?",
             isPresented: $confirmDelete,
             titleVisibility: .visible
         ) {
-            Button("Delete", role: .destructive) {
+            Button("Delete Workout", role: .destructive) {
                 delete()
             }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("This session and its logged sets will be permanently removed.")
+            Text("This logged workout and all its sets are removed permanently. Your saved workout is not affected.")
         }
         .task {
             loadProgressions()
@@ -152,6 +140,23 @@ struct SessionDetailView: View {
         .padding(.vertical, 6)
         .background {
             Capsule().fill(Color.accentColor.opacity(0.14))
+        }
+    }
+
+    // MARK: - Delete
+
+    /// At the bottom of the screen it acts on, not behind an overflow menu —
+    /// a menu holding a single item is pure chrome, and a confirmation raised
+    /// from inside one has to wait for the menu to dismiss before it can
+    /// present, which is what made it appear detached from its trigger.
+    private var deleteSection: some View {
+        Section {
+            Button(role: .destructive) {
+                confirmDelete = true
+            } label: {
+                Text("Delete Workout")
+                    .frame(maxWidth: .infinity, alignment: .center)
+            }
         }
     }
 

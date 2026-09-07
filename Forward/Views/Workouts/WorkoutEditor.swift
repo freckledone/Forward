@@ -3,9 +3,9 @@ import SwiftData
 
 /// Form-style editor for creating/editing a Workout (formerly TemplateEditor).
 ///
-/// - Name field
-/// - Exercises list (reorderable, deletable via swipe)
-/// - "Add Exercise" button presents `ExercisePicker` as a sheet
+/// - Name field and tint picker
+/// - Exercises list: reorderable, swipe for Swap / Delete
+/// - "Add Exercise" presents `ExercisePicker` as a sheet
 /// - Persist-on-change (D-029); no explicit Save.
 struct WorkoutEditor: View {
     @Bindable var workout: Workout
@@ -14,8 +14,22 @@ struct WorkoutEditor: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(ExerciseCatalog.self) private var catalog
 
-    @State private var pickerPresented = false
+    @State private var picker: PickerMode?
     @State private var confirmDelete = false
+
+    /// One sheet, two jobs. Two `.sheet` modifiers on the same view is a
+    /// coin-flip over which one wins, so the mode is modelled instead.
+    private enum PickerMode: Identifiable {
+        case add
+        case swap(WorkoutExercise)
+
+        var id: String {
+            switch self {
+            case .add: return "add"
+            case .swap(let we): return "swap-\(we.id.uuidString)"
+            }
+        }
+    }
 
     private var orderedExercises: [WorkoutExercise] {
         (workout.exercises ?? []).sorted { $0.displayOrder < $1.displayOrder }
@@ -47,57 +61,24 @@ struct WorkoutEditor: View {
                     .font(.footnote)
             }
 
-            Section {
-                if orderedExercises.isEmpty {
-                    Text("No exercises yet.")
-                        .foregroundStyle(.secondary)
-                } else {
-                    ForEach(orderedExercises) { we in
-                        WorkoutExerciseRow(workoutExercise: we)
-                    }
-                    .onDelete { offsets in
-                        deleteExercises(at: offsets)
-                    }
-                    .onMove { source, destination in
-                        moveExercises(from: source, to: destination)
-                    }
-                }
-
-                Button {
-                    pickerPresented = true
-                } label: {
-                    Label("Add Exercise", systemImage: "plus.circle.fill")
-                }
-            } header: {
-                Text("Exercises")
-            } footer: {
-                if !orderedExercises.isEmpty {
-                    Text("Tap a row to edit sets and rep range. Swipe to remove.")
-                        .font(.footnote)
-                }
-            }
+            exercisesSection
+            deleteSection
         }
         .navigationTitle(workout.name.isEmpty ? "New Workout" : workout.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Menu {
-                    if !orderedExercises.isEmpty {
-                        EditButton()
-                    }
-                    Button(role: .destructive) {
-                        confirmDelete = true
-                    } label: {
-                        Label("Delete Workout", systemImage: "trash")
-                    }
-                } label: {
-                    Image(systemName: "ellipsis.circle")
+            if !orderedExercises.isEmpty {
+                ToolbarItem(placement: .topBarTrailing) {
+                    EditButton()
                 }
             }
         }
-        .sheet(isPresented: $pickerPresented) {
+        .sheet(item: $picker) { mode in
             ExercisePicker { exercise in
-                addExercise(exercise)
+                switch mode {
+                case .add: addExercise(exercise)
+                case .swap(let we): swap(we, to: exercise)
+                }
             }
         }
         .confirmationDialog(
@@ -105,12 +86,79 @@ struct WorkoutEditor: View {
             isPresented: $confirmDelete,
             titleVisibility: .visible
         ) {
-            Button("Delete", role: .destructive) {
+            Button("Delete Workout", role: .destructive) {
                 deleteWorkout()
             }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("This will remove the workout and its exercises. Your logged sessions from this workout will remain in History.")
+            Text("This removes the workout and its exercises. Sessions you already logged from it stay in History.")
+        }
+    }
+
+    // MARK: - Exercises
+
+    private var exercisesSection: some View {
+        Section {
+            if orderedExercises.isEmpty {
+                Text("No exercises yet.")
+                    .foregroundStyle(.secondary)
+            } else {
+                ForEach(orderedExercises) { we in
+                    WorkoutExerciseRow(workoutExercise: we)
+                        // Full swipe is off deliberately: with a destructive
+                        // action in the tray, a fast flick would delete an
+                        // exercise the user meant to swap.
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button(role: .destructive) {
+                                delete(we)
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+
+                            Button {
+                                picker = .swap(we)
+                            } label: {
+                                Label("Swap", systemImage: "arrow.triangle.2.circlepath")
+                            }
+                            .tint(Color.accentColor)
+                        }
+                }
+                .onDelete { offsets in
+                    deleteExercises(at: offsets)
+                }
+                .onMove { source, destination in
+                    moveExercises(from: source, to: destination)
+                }
+            }
+
+            Button {
+                picker = .add
+            } label: {
+                Label("Add Exercise", systemImage: "plus.circle.fill")
+            }
+        } header: {
+            Text("Exercises")
+        } footer: {
+            if !orderedExercises.isEmpty {
+                Text("Tap a row to edit sets and rep range. Swipe left to swap the exercise or remove it.")
+                    .font(.footnote)
+            }
+        }
+    }
+
+    /// Destructive actions belong at the bottom of the screen they act on —
+    /// the pattern Contacts and Calendar use — not hidden in an overflow menu.
+    /// It is also more predictable: a confirmation raised from inside a menu
+    /// has to wait for that menu to dismiss first, which is what made this one
+    /// appear detached from the control that triggered it.
+    private var deleteSection: some View {
+        Section {
+            Button(role: .destructive) {
+                confirmDelete = true
+            } label: {
+                Text("Delete Workout")
+                    .frame(maxWidth: .infinity, alignment: .center)
+            }
         }
     }
 
@@ -132,6 +180,20 @@ struct WorkoutEditor: View {
         } else {
             workout.exercises?.append(we)
         }
+        workout.updatedAt = Date()
+    }
+
+    /// Point the slot at a different exercise, keeping its position, set count
+    /// and rep range. Nothing is reset — unlike a mid-session swap (D-053),
+    /// a workout holds no logged data to invalidate.
+    private func swap(_ we: WorkoutExercise, to exercise: Exercise) {
+        guard we.exerciseId != exercise.id else { return }
+        we.exerciseId = exercise.id
+        workout.updatedAt = Date()
+    }
+
+    private func delete(_ we: WorkoutExercise) {
+        modelContext.delete(we)
         workout.updatedAt = Date()
     }
 
