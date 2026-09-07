@@ -4,8 +4,6 @@
 <dict>
 	<key>ForwardCloudKitContainer</key>
 	<string>$(FORWARD_ICLOUD_CONTAINER)</string>
-	<key>NSHealthUpdateUsageDescription</key>
-	<string>Forward saves your completed workouts to Apple Health so they count toward your Activity rings and appear alongside your other training in the Fitness app.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
