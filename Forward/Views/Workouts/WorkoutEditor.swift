@@ -16,7 +16,9 @@ struct WorkoutEditor: View {
 
     @State private var picker: PickerMode?
     @State private var confirmDelete = false
-    /// Which rows have their inline sets/reps editor open.
+    /// Which rows have their inline sets/reps editor open. Keyed by id in the
+    /// parent rather than held as `@State` inside the row, so reordering moves
+    /// each row's open/closed state with it.
     @State private var expandedExercises: Set<UUID> = []
 
     /// One sheet, two jobs. Two `.sheet` modifiers on the same view is a
@@ -115,29 +117,27 @@ struct WorkoutEditor: View {
                         workoutExercise: we,
                         expanded: expansionBinding(for: we)
                     )
-                        // Full swipe is off deliberately: with a destructive
-                        // action in the tray, a fast flick would delete an
-                        // exercise the user meant to swap.
-                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                            Button(role: .destructive) {
-                                delete(we)
-                            } label: {
-                                Label("Delete", systemImage: "trash")
-                            }
-
+                        // One action per edge rather than a stacked tray, so
+                        // each gesture has a single unambiguous meaning.
+                        //
+                        // Full swipe follows the stakes: swapping only opens a
+                        // picker you can cancel, so a fast flick is safe there.
+                        // On the delete side a flick would destroy the row, the
+                        // same hazard that removed swipe-to-delete from Home.
+                        .swipeActions(edge: .leading, allowsFullSwipe: true) {
                             Button {
                                 picker = .swap(we)
                             } label: {
                                 Label("Swap", systemImage: "arrow.triangle.2.circlepath")
                             }
                             .tint(Color.accentColor)
-
-                            Button {
-                                withAnimation { toggleExpansion(we) }
+                        }
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button(role: .destructive) {
+                                delete(we)
                             } label: {
-                                Label("Edit", systemImage: "slider.horizontal.3")
+                                Label("Delete", systemImage: "trash")
                             }
-                            .tint(.secondary)
                         }
                 }
                 .onDelete { offsets in
@@ -157,7 +157,7 @@ struct WorkoutEditor: View {
             Text("Exercises")
         } footer: {
             if !orderedExercises.isEmpty {
-                Text("Tap a row to edit sets and rep range. Swipe left to edit, swap, or remove it.")
+                Text("Tap a row to edit sets and rep range. Swipe right to swap the exercise, left to remove it.")
                     .font(.footnote)
             }
         }
@@ -189,14 +189,6 @@ struct WorkoutEditor: View {
                 else { expandedExercises.remove(we.id) }
             }
         )
-    }
-
-    private func toggleExpansion(_ we: WorkoutExercise) {
-        if expandedExercises.contains(we.id) {
-            expandedExercises.remove(we.id)
-        } else {
-            expandedExercises.insert(we.id)
-        }
     }
 
     // MARK: - Mutations
