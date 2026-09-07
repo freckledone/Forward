@@ -24,7 +24,6 @@ struct ExpandedExerciseSection: View {
 
     @Environment(\.modelContext) private var modelContext
     @Environment(ExerciseCatalog.self) private var catalog
-    @Environment(\.colorScheme) private var colorScheme
 
     @FocusState private var focusedField: SetFieldFocus?
 
@@ -83,16 +82,7 @@ struct ExpandedExerciseSection: View {
         .padding(.vertical, 16)
         .padding(.horizontal, 12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background {
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .fill(Color(uiColor: .secondarySystemGroupedBackground))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 22, style: .continuous)
-                        .fill(MuscleTint.cardGradient(for: primaryMuscle, colorScheme: colorScheme))
-                }
-        }
-        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
-        .shadow(color: .black.opacity(0.04), radius: 6, y: 2)
+        .cardSurface(tint: primaryMuscle)
         .sheet(isPresented: $swapPresented) {
             ExercisePicker { picked in
                 swap(to: picked)

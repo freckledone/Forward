@@ -38,6 +38,12 @@ nonisolated enum MuscleTint {
         muscle.map(color(for:))
     }
 
+    /// Fill for a small muscle chip. Pastels need more presence against a
+    /// dark surface than against a white one to read as the same weight.
+    static func chipFill(for group: MuscleGroup, colorScheme: ColorScheme) -> Color {
+        color(for: group).opacity(colorScheme == .dark ? 0.30 : 0.22)
+    }
+
     // MARK: - Card background gradients
 
     /// Subtle tinted gradient for a card background per §2 (light: 10%→4%;

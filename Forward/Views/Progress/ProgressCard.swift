@@ -12,7 +12,6 @@ struct ProgressCard: View {
     let exercise: Exercise
 
     @Environment(\.modelContext) private var modelContext
-    @Environment(\.colorScheme) private var colorScheme
 
     @Query private var prefsList: [UserPreferences]
     private var displayUnit: DisplayUnit { prefsList.first?.unit ?? .kg }
@@ -45,16 +44,7 @@ struct ProgressCard: View {
         }
         .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background {
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(Color(uiColor: .secondarySystemGroupedBackground))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .fill(MuscleTint.cardGradient(for: primaryMuscle, colorScheme: colorScheme))
-                }
-        }
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-        .shadow(color: .black.opacity(0.04), radius: 6, y: 2)
+        .cardSurface(tint: primaryMuscle)
         .task {
             stats = ProgressCalculator.stats(for: exercise.id, in: modelContext)
         }

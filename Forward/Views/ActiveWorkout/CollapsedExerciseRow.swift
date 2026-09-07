@@ -21,12 +21,12 @@ struct CollapsedExerciseRow: View {
                     .foregroundStyle(.primary)
                     .lineLimit(1)
                 Spacer(minLength: 6)
+                // No chevron: tapping expands this row in place, it does not
+                // push a screen. A disclosure indicator would promise
+                // navigation that never happens.
                 Text("\(completedSets)/\(totalSets)")
                     .font(.footnote.monospacedDigit())
                     .foregroundStyle(.secondary)
-                Image(systemName: "chevron.right")
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(.tertiary)
             }
             .padding(.vertical, 12)
             .padding(.horizontal, 16)

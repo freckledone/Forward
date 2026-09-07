@@ -95,16 +95,7 @@ struct WorkoutCard: View {
             .accessibilityLabel("Start workout")
         }
         .padding(20)
-        .background {
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(Color(uiColor: .secondarySystemGroupedBackground))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .fill(MuscleTint.cardGradient(for: tintMuscle, colorScheme: colorScheme))
-                }
-        }
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-        .shadow(color: .black.opacity(0.04), radius: 6, y: 2)
+        .cardSurface(tint: tintMuscle)
     }
 
     private var summary: some View {
@@ -148,7 +139,7 @@ struct WorkoutCard: View {
             .padding(.horizontal, 9)
             .padding(.vertical, 4)
             .background {
-                Capsule().fill(MuscleTint.color(for: muscle).opacity(0.22))
+                Capsule().fill(MuscleTint.chipFill(for: muscle, colorScheme: colorScheme))
             }
     }
 }
