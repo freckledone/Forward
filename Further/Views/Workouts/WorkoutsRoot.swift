@@ -10,6 +10,7 @@ import SwiftData
 struct WorkoutsRoot: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(ExerciseCatalog.self) private var catalog
+    @Environment(WorkoutActivityController.self) private var activityController
 
     // Programs ordered by user-defined displayOrder.
     @Query(sort: \Program.displayOrder) private var programs: [Program]
@@ -63,6 +64,9 @@ struct WorkoutsRoot: View {
                         finishedSession = finished
                     },
                     onDiscard: {
+                        // Discarding is the other way out of a workout; the
+                        // card has to go with it.
+                        activityController.end()
                         SessionLifecycle.discard(session, context: modelContext)
                         activeSession = nil
                     }

@@ -6,7 +6,20 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		7BAE32723050CF7A00C4D062 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BAE32713050CF7900C4D062 /* WidgetKit.framework */; };
+		7BAE32743050CF7A00C4D062 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BAE32733050CF7A00C4D062 /* SwiftUI.framework */; };
+		7BAE32853050CF7C00C4D062 /* FurtherWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7BAE326F3050CF7900C4D062 /* FurtherWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
+		7BAE32833050CF7C00C4D062 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7BFB7ACA304DE0A900220DC6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7BAE326E3050CF7900C4D062;
+			remoteInfo = FurtherWidgetsExtension;
+		};
 		7BFB7AE4304DE0AB00220DC6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7BFB7ACA304DE0A900220DC6 /* Project object */;
@@ -23,7 +36,24 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		7BAE328A3050CF7C00C4D062 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				7BAE32853050CF7C00C4D062 /* FurtherWidgetsExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		7BAE326F3050CF7900C4D062 /* FurtherWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FurtherWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		7BAE32713050CF7900C4D062 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		7BAE32733050CF7A00C4D062 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		7BFB7AD2304DE0A900220DC6 /* Further.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Further.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7BFB7AE3304DE0AB00220DC6 /* FurtherTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FurtherTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7BFB7AED304DE0AB00220DC6 /* FurtherUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FurtherUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -31,6 +61,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		7BAE32893050CF7C00C4D062 /* Exceptions for "FurtherWidgets" folder in "FurtherWidgetsExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 7BAE326E3050CF7900C4D062 /* FurtherWidgetsExtension */;
+		};
 		7BFB7AF5304DE0AB00220DC6 /* Exceptions for "Further" folder in "Further" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -41,6 +78,19 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		7BAE32753050CF7A00C4D062 /* FurtherWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				7BAE32893050CF7C00C4D062 /* Exceptions for "FurtherWidgets" folder in "FurtherWidgetsExtension" target */,
+			);
+			path = FurtherWidgets;
+			sourceTree = "<group>";
+		};
+		7BAE33013050CF7C00C4D062 /* Shared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Shared;
+			sourceTree = "<group>";
+		};
 		7BFB7AD4304DE0A900220DC6 /* Further */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -62,6 +112,15 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		7BAE326C3050CF7900C4D062 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7BAE32743050CF7A00C4D062 /* SwiftUI.framework in Frameworks */,
+				7BAE32723050CF7A00C4D062 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7BFB7ACF304DE0A900220DC6 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -86,6 +145,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7BAE32703050CF7900C4D062 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7BAE32713050CF7900C4D062 /* WidgetKit.framework */,
+				7BAE32733050CF7A00C4D062 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		7BFB7AC9304DE0A900220DC6 = {
 			isa = PBXGroup;
 			children = (
@@ -93,6 +161,9 @@
 				7BFB7AD4304DE0A900220DC6 /* Further */,
 				7BFB7AE6304DE0AB00220DC6 /* FurtherTests */,
 				7BFB7AF0304DE0AB00220DC6 /* FurtherUITests */,
+				7BAE32753050CF7A00C4D062 /* FurtherWidgets */,
+				7BAE33013050CF7C00C4D062 /* Shared */,
+				7BAE32703050CF7900C4D062 /* Frameworks */,
 				7BFB7AD3304DE0A900220DC6 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -103,6 +174,7 @@
 				7BFB7AD2304DE0A900220DC6 /* Further.app */,
 				7BFB7AE3304DE0AB00220DC6 /* FurtherTests.xctest */,
 				7BFB7AED304DE0AB00220DC6 /* FurtherUITests.xctest */,
+				7BAE326F3050CF7900C4D062 /* FurtherWidgetsExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -110,6 +182,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		7BAE326E3050CF7900C4D062 /* FurtherWidgetsExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7BAE32863050CF7C00C4D062 /* Build configuration list for PBXNativeTarget "FurtherWidgetsExtension" */;
+			buildPhases = (
+				7BAE326B3050CF7900C4D062 /* Sources */,
+				7BAE326C3050CF7900C4D062 /* Frameworks */,
+				7BAE326D3050CF7900C4D062 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				7BAE32753050CF7A00C4D062 /* FurtherWidgets */,
+				7BAE33013050CF7C00C4D062 /* Shared */,
+			);
+			name = FurtherWidgetsExtension;
+			packageProductDependencies = (
+			);
+			productName = FurtherWidgetsExtension;
+			productReference = 7BAE326F3050CF7900C4D062 /* FurtherWidgetsExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		7BFB7AD1304DE0A900220DC6 /* Further */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7BFB7AF6304DE0AB00220DC6 /* Build configuration list for PBXNativeTarget "Further" */;
@@ -117,12 +212,15 @@
 				7BFB7ACE304DE0A900220DC6 /* Sources */,
 				7BFB7ACF304DE0A900220DC6 /* Frameworks */,
 				7BFB7AD0304DE0A900220DC6 /* Resources */,
+				7BAE328A3050CF7C00C4D062 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				7BAE32843050CF7C00C4D062 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				7BAE33013050CF7C00C4D062 /* Shared */,
 				7BFB7AD4304DE0A900220DC6 /* Further */,
 			);
 			name = Further;
@@ -188,6 +286,9 @@
 				LastSwiftUpdateCheck = 2610;
 				LastUpgradeCheck = 2610;
 				TargetAttributes = {
+					7BAE326E3050CF7900C4D062 = {
+						CreatedOnToolsVersion = 26.1;
+					};
 					7BFB7AD1304DE0A900220DC6 = {
 						CreatedOnToolsVersion = 26.1;
 					};
@@ -218,11 +319,19 @@
 				7BFB7AD1304DE0A900220DC6 /* Further */,
 				7BFB7AE2304DE0AB00220DC6 /* FurtherTests */,
 				7BFB7AEC304DE0AB00220DC6 /* FurtherUITests */,
+				7BAE326E3050CF7900C4D062 /* FurtherWidgetsExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		7BAE326D3050CF7900C4D062 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7BFB7AD0304DE0A900220DC6 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -247,6 +356,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		7BAE326B3050CF7900C4D062 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7BFB7ACE304DE0A900220DC6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -271,6 +387,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		7BAE32843050CF7C00C4D062 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7BAE326E3050CF7900C4D062 /* FurtherWidgetsExtension */;
+			targetProxy = 7BAE32833050CF7C00C4D062 /* PBXContainerItemProxy */;
+		};
 		7BFB7AE5304DE0AB00220DC6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 7BFB7AD1304DE0A900220DC6 /* Further */;
@@ -284,6 +405,68 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		7BAE32873050CF7C00C4D062 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "$(FURTHER_TEAM_ID)";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FurtherWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FurtherWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(FURTHER_BUNDLE_ID).FurtherWidgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		7BAE32883050CF7C00C4D062 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "$(FURTHER_TEAM_ID)";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FurtherWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FurtherWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(FURTHER_BUNDLE_ID).FurtherWidgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		7BFB7AF7304DE0AB00220DC6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -300,6 +483,7 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.sports";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Further does not read your health data. Apple requires this description wherever an app is allowed to use Health at all; the only access Further uses is saving your completed workouts.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Further saves your completed workouts to Apple Health so they count toward your Activity rings and appear alongside your other training in the Fitness app.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -339,6 +523,7 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.sports";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Further does not read your health data. Apple requires this description wherever an app is allowed to use Health at all; the only access Further uses is saving your completed workouts.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Further saves your completed workouts to Apple Health so they count toward your Activity rings and appear alongside your other training in the Fitness app.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -572,6 +757,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		7BAE32863050CF7C00C4D062 /* Build configuration list for PBXNativeTarget "FurtherWidgetsExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7BAE32873050CF7C00C4D062 /* Debug */,
+				7BAE32883050CF7C00C4D062 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		7BFB7ACD304DE0A900220DC6 /* Build configuration list for PBXProject "Further" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

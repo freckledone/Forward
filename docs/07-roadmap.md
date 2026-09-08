@@ -74,7 +74,7 @@ evidence that hasn't arrived yet.
 Unordered until Phase B produces its list. Recorded now so the reasoning isn't
 re-derived later.
 
-### In progress
+### Shipped
 
 **Timed exercises** (D-010, D-042). The only parking-lot item that is a concrete
 hole rather than a preference: Side Plank is in the author's own program and the
@@ -87,8 +87,10 @@ model projected into an `Exercise`, merged into the catalog so every existing
 lookup, search and filter path works unchanged, with a form mirroring the
 bundled JSON schema field-for-field.
 
-**Live Activity.** Still to build. Needs a Widget Extension target, which has to
-be added through Xcode's template rather than by editing the project file.
+**Live Activity.** Shipped 2026-09-09 (D-074): workout name, elapsed time,
+current exercise and a set-progress bar on the Lock Screen and in the Dynamic
+Island, with the shared attributes type in a `Shared/` folder claimed by both
+targets.
 
 ### Planned, not started — Apple Watch app
 

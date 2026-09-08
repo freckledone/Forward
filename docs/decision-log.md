@@ -484,6 +484,18 @@ Original:
 - **Date:** 2026-09-09
 - **Impact:** The roadmap records reasoning rather than promises: items move only when a decision entry says so. It also carries the declines with their grounds, so they aren't silently re-litigated. Opens Q-011 (whether D-024's permanent ban on gamification stands, given the author's actual answer was the softer "maybe add them to V2") and closes Q-012 (no `Forward` strings remain in any identifier).
 
+### D-074 — Live Activity for a workout in progress
+- **Decision:** A Widget Extension ships a single Live Activity showing workout name, elapsed time, current exercise, position in the workout, and a segmented set-progress bar, on both the Lock Screen and the Dynamic Island. Xcode's home-screen widget and Control Widget templates were deleted. `WorkoutActivityController` starts it on entering a workout, updates it when the current exercise or the logged-set count changes, and ends it on both Finish and Discard.
+- **Why:** Between sets the phone is face-down on a bench. This is the one place the app can be useful without being opened — and it does it without adding a screen to the app itself.
+- **Alternatives:** Also ship a home-screen widget; push updates on a timer; keep the card alive briefly after finishing.
+- **Why not:** A workout tracker has nothing useful to say on the home screen between sessions, so the template widgets would have shipped as dead surface. Timer-based updates are unnecessary: `startedAt` is fixed for the session, so the views render a self-updating `Text(_:style:.timer)` and never spend an update on the clock. A card that outlives its session claims a workout is running when it isn't.
+- **Date:** 2026-09-09
+- **Impact:** Verified by Release archive: the extension embeds as `FurtherWidgetsExtension.appex` and the app declares `NSSupportsLiveActivities`.
+  - `WorkoutActivityAttributes` lives in a new `Shared/` synchronized folder claimed by **both** targets. A synchronized folder belongs to exactly one target, so sharing needed a third group rather than duplicating the type — and a duplicate would fail at runtime, not build time, when the two drifted.
+  - Every call is silent and non-fatal. The session is already saved in SwiftData before any of this runs; disabled activities, a full system slot budget, or a throttled update must never fail a set.
+  - `endOrphanedActivities()` runs at launch: a crash mid-workout would otherwise strand a card with no session behind it.
+  - Xcode hardcoded the extension's bundle id into `project.pbxproj`; rewritten to `$(FURTHER_BUNDLE_ID).FurtherWidgets` so build identity stays out of the repo (D-064).
+
 ### D-052 — Set completion advances focus to the next set's weight field
 - **Decision:** Tapping a set's complete button moves keyboard focus to the *next* unlogged, non-skipped set's weight field. When no sets remain, focus drops and the next exercise with remaining sets expands and scrolls into view. Focus state lives on `ExpandedExerciseSection` (shared `@FocusState<SetFieldFocus?>` passed into each `WorkSetRow` as a binding), not inside the row.
 - **Why:** Real-workout feedback: completing a set left the keyboard parked on the set just finished, so every set cost an extra tap to re-target. Logging should be tap-check, type, tap-check, type.

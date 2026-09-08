@@ -17,6 +17,7 @@ struct ActiveWorkoutView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(ExerciseCatalog.self) private var catalog
+    @Environment(WorkoutActivityController.self) private var activityController
     @Environment(\.colorScheme) private var colorScheme
 
     // Which exercise is currently "expanded" (Model C).
@@ -132,8 +133,50 @@ struct ActiveWorkoutView: View {
                     currentExerciseId = first.id
                 }
                 Haptics.workoutStarted()
+                startLiveActivity()
             }
+            // Driven off the current exercise and its completed-set count, so
+            // it refreshes when you tick a set or move on — and not otherwise.
+            .onChange(of: currentExercise?.id) { _, _ in updateLiveActivity() }
+            .onChange(of: loggedSetCount) { _, _ in updateLiveActivity() }
         }
+    }
+
+    // MARK: - Live Activity (D-074)
+
+    /// Total logged sets across the session. A plain Int is enough to drive
+    /// updates: any tick changes it, and nothing else does.
+    private var loggedSetCount: Int {
+        orderedExercises.reduce(0) { total, se in
+            total + (se.sets ?? []).filter { $0.completedAt != nil }.count
+        }
+    }
+
+    private var activityState: WorkoutActivityAttributes.ContentState {
+        let list = orderedExercises
+        let current = currentExercise
+        let sets = (current?.sets ?? [])
+        let position = current.flatMap { c in list.firstIndex { $0.id == c.id } }.map { $0 + 1 } ?? 1
+
+        return WorkoutActivityAttributes.ContentState(
+            exerciseName: current?.exerciseNameSnapshot ?? "Workout",
+            completedSets: sets.filter { $0.completedAt != nil }.count,
+            totalSets: sets.count,
+            exercisePosition: position,
+            exerciseCount: max(list.count, 1)
+        )
+    }
+
+    private func startLiveActivity() {
+        activityController.start(
+            workoutName: session.workoutNameSnapshot ?? "Workout",
+            startedAt: session.startedAt,
+            state: activityState
+        )
+    }
+
+    private func updateLiveActivity() {
+        activityController.update(activityState)
     }
 
     // MARK: - Toolbar title
@@ -215,6 +258,7 @@ struct ActiveWorkoutView: View {
     }
 
     private func finish() {
+        activityController.end()
         Haptics.workoutEnded()
         SessionLifecycle.end(session)
         onFinish(session)

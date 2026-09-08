@@ -14,6 +14,7 @@ struct FurtherApp: App {
     let syncStatus: SyncStatus
     let exerciseCatalog: ExerciseCatalog
     let healthWriter: HealthKitWorkoutWriter
+    let activityController: WorkoutActivityController
 
     init() {
         let schema = Schema(versionedSchema: SchemaV2.self)
@@ -68,6 +69,7 @@ struct FurtherApp: App {
 
         exerciseCatalog = ExerciseCatalog()
         healthWriter = HealthKitWorkoutWriter()
+        activityController = WorkoutActivityController()
     }
 
     var body: some Scene {
@@ -76,7 +78,11 @@ struct FurtherApp: App {
                 .environment(exerciseCatalog)
                 .environment(syncStatus)
                 .environment(healthWriter)
+                .environment(activityController)
                 .task {
+                    // A crash mid-workout can strand a card with no session
+                    // behind it; clear those before starting anything new.
+                    activityController.endOrphanedActivities()
                     // Custom exercises live in the store, so they can only be
                     // folded in once the container exists (D-073).
                     exerciseCatalog.refreshCustom(from: modelContainer.mainContext)
