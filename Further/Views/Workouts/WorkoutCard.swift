@@ -2,12 +2,14 @@ import SwiftUI
 
 /// Fitness-tile-inspired card for a Workout on Home (Design System §7, D-043).
 ///
-/// Two tap targets, as *sibling* buttons rather than a play button nested
-/// inside a `NavigationLink`. Siblings keep both taps reliable and — because
-/// the row is no longer a link — keep `List` from drawing a disclosure
-/// chevron next to every workout:
-///   - card body → workout editor (via `onOpen`)
-///   - play button → start session (via `onStart`)
+/// The whole card is one tap target and it **starts the workout** (D-075).
+/// Starting is what you came to Home to do; editing is the rare case, and it
+/// lives on swipe and long-press instead.
+///
+/// That also collapses the card back to a single button. It previously held
+/// two sibling buttons so a tap could mean either thing, which needed each
+/// half to define its own hit area. The play glyph is now decoration — it
+/// signals what a tap does rather than being separately tappable.
 ///
 /// - 20pt padding + 20pt continuous corner radius
 /// - Muscle-group-tinted gradient background (derived from the first exercise's
@@ -15,7 +17,6 @@ import SwiftUI
 /// - Subtle shadow (§7)
 struct WorkoutCard: View {
     let workout: Workout
-    let onOpen: () -> Void
     let onStart: () -> Void
 
     @Environment(\.colorScheme) private var colorScheme
@@ -66,21 +67,13 @@ struct WorkoutCard: View {
     }
 
     var body: some View {
-        // Centered so the play button sits opposite the middle of the
-        // exercise list rather than riding the title's baseline.
-        HStack(alignment: .center, spacing: 16) {
-            Button {
-                onOpen()
-            } label: {
+        Button(action: onStart) {
+            // Centered so the play glyph sits opposite the middle of the
+            // exercise list rather than riding the title's baseline.
+            HStack(alignment: .center, spacing: 16) {
                 summary
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
 
-            Button {
-                onStart()
-            } label: {
                 Image(systemName: "play.fill")
                     .font(.system(size: 26, weight: .semibold))
                     .foregroundStyle(Color.accentColor)
@@ -90,12 +83,17 @@ struct WorkoutCard: View {
                     .background {
                         Circle().fill(Color.accentColor.opacity(0.12))
                     }
+                    .accessibilityHidden(true)
             }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Start workout")
+            .padding(20)
+            .cardSurface(tint: tintMuscle)
+            .contentShape(
+                RoundedRectangle(cornerRadius: CornerRadius.card, style: .continuous)
+            )
         }
-        .padding(20)
-        .cardSurface(tint: tintMuscle)
+        .buttonStyle(.plain)
+        .accessibilityLabel("Start \(workout.name.isEmpty ? "Untitled" : workout.name)")
+        .accessibilityHint(countsLine)
     }
 
     private var summary: some View {

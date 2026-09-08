@@ -339,7 +339,7 @@ Original:
 - **Date:** 2026-09-06
 - **Impact:** `TemplateExercise` schema in 05-technical-architecture.md updated. Template editing UI needs a min + max input (or a single input when the user wants a fixed number, with an expand-to-range affordance). SuggestionEngine still uses last-session reps for pre-fill (no change).
 
-### D-056 — Workout rows are sibling buttons, not NavigationLinks
+### D-056 — Workout rows are sibling buttons, not NavigationLinks · **Superseded by D-075 (2026-09-09)**
 - **Decision:** Home workout rows drop `NavigationLink` in favour of a `WorkoutCard` holding two sibling `Button`s — the summary block (`onOpen`, pushing the editor via the existing `navigationDestination(item: $editingWorkout)`) and the play button (`onStart`). The play button is vertically centered in the card and enlarged to a 54pt circle with a 26pt glyph.
 - **Why:** A `NavigationLink` row makes `List` draw a disclosure chevron on every workout, which is visual noise on a card that already reads as tappable — and the chevron competed with the play button for the eye. Sibling buttons also remove the nested-button ambiguity of a `Button` living inside a link's label.
 - **Alternatives:** Keep the link and hide the chevron with a zero-opacity overlay link; keep the link and shrink the play button; move the play button outside the card.
@@ -495,6 +495,16 @@ Original:
   - Every call is silent and non-fatal. The session is already saved in SwiftData before any of this runs; disabled activities, a full system slot budget, or a throttled update must never fail a set.
   - `endOrphanedActivities()` runs at launch: a crash mid-workout would otherwise strand a card with no session behind it.
   - Xcode hardcoded the extension's bundle id into `project.pbxproj`; rewritten to `$(FURTHER_BUNDLE_ID).FurtherWidgets` so build identity stays out of the repo (D-064).
+
+### D-075 — Tapping a workout starts it · Supersedes D-056
+- **Decision:** On Home, tapping anywhere on a workout card **starts the workout**. Editing moves to a trailing swipe action; long-press opens a context menu with Edit and Delete, the latter behind an alert. The play glyph becomes decoration rather than a separate button.
+- **Why:** Starting a workout is why Home exists; editing one is rare by comparison. Making the whole card the primary action matches that frequency, and the card was already the largest touch target on screen — it just did the less common thing.
+- **Alternatives:** Keep tap-to-edit with the play button starting; put edit on a leading swipe; leave delete out of the context menu as before.
+- **Why not:** Two sibling buttons meant a tap on the card could mean either thing depending on where it landed, and each half had to define its own hit area to stay predictable. A leading swipe conventionally means a positive/completion action, and there is nothing to pair it with here. Delete was previously reachable only from inside the editor (D-052 era) because swipe-to-delete was too easy to trigger; a long-press context menu is a deliberate gesture, so it can carry Delete safely — still behind a confirmation.
+- **Date:** 2026-09-09
+- **Impact:** Collapses `WorkoutCard` back to a single `Button`, which removes the nested-button problem D-056 worked around. `onOpen` is gone. Delete is now reachable from Home as well as the editor, both behind an alert (D-066).
+  - **Discoverability moves down, deliberately.** Both routes to editing are now hidden gestures. That is the correct trade when starting outnumbers editing by a wide margin, but it is a real cost and worth revisiting if editing turns out to be more frequent than assumed.
+  - VoiceOver cannot perform swipe actions or long-press menus as gestures, so the row carries an explicit `accessibilityAction(named: "Edit workout")`. The play glyph is `accessibilityHidden`, since the card itself already announces "Start <name>".
 
 ### D-052 — Set completion advances focus to the next set's weight field
 - **Decision:** Tapping a set's complete button moves keyboard focus to the *next* unlogged, non-skipped set's weight field. When no sets remain, focus drops and the next exercise with remaining sets expands and scrolls into view. Focus state lives on `ExpandedExerciseSection` (shared `@FocusState<SetFieldFocus?>` passed into each `WorkSetRow` as a binding), not inside the row.

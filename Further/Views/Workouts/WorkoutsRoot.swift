@@ -33,6 +33,9 @@ struct WorkoutsRoot: View {
     // Program rename sheet target.
     @State private var renamingProgram: Program?
 
+    // Workout awaiting delete confirmation.
+    @State private var pendingDelete: Workout?
+
     // Settings sheet.
     @State private var showingSettings = false
 
@@ -83,6 +86,24 @@ struct WorkoutsRoot: View {
             .sheet(isPresented: $showingSettings) {
                 SettingsView()
             }
+            // An alert rather than a confirmationDialog, per D-066.
+            .alert(
+                "Delete \"\(pendingDelete?.name.isEmpty == false ? pendingDelete!.name : "this workout")\"?",
+                isPresented: Binding(
+                    get: { pendingDelete != nil },
+                    set: { if !$0 { pendingDelete = nil } }
+                )
+            ) {
+                Button("Delete", role: .destructive) {
+                    if let pendingDelete {
+                        modelContext.delete(pendingDelete)
+                    }
+                    pendingDelete = nil
+                }
+                Button("Cancel", role: .cancel) { pendingDelete = nil }
+            } message: {
+                Text("This removes the workout and its exercises. Sessions you already logged from it stay in History.")
+            }
         }
     }
 
@@ -123,17 +144,40 @@ struct WorkoutsRoot: View {
                 Section {
                     let workouts = (program.workouts ?? []).sorted { $0.displayOrder < $1.displayOrder }
                     ForEach(workouts) { workout in
-                        // Programmatic push rather than a NavigationLink: a
-                        // link row draws a disclosure chevron, and the card
-                        // already says "tap me" on its own.
-                        WorkoutCard(
-                            workout: workout,
-                            onOpen: { editingWorkout = workout },
-                            onStart: { startWorkout(from: workout) }
-                        )
+                        // Tapping starts the workout (D-075). Editing moves to
+                        // a swipe, and destructive actions to a long press,
+                        // where they take a deliberate gesture to reach.
+                        WorkoutCard(workout: workout) {
+                            startWorkout(from: workout)
+                        }
                         .listRowInsets(EdgeInsets(top: 6, leading: 20, bottom: 6, trailing: 20))
                         .listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button {
+                                editingWorkout = workout
+                            } label: {
+                                Label("Edit", systemImage: "pencil")
+                            }
+                            .tint(Color.accentColor)
+                        }
+                        .contextMenu {
+                            Button {
+                                editingWorkout = workout
+                            } label: {
+                                Label("Edit Workout", systemImage: "pencil")
+                            }
+                            Button(role: .destructive) {
+                                pendingDelete = workout
+                            } label: {
+                                Label("Delete Workout", systemImage: "trash")
+                            }
+                        }
+                        // Both routes to editing are gestures, which VoiceOver
+                        // cannot perform. This gives it a real action instead.
+                        .accessibilityAction(named: "Edit workout") {
+                            editingWorkout = workout
+                        }
                     }
                     .onMove { source, destination in
                         moveWorkouts(from: program, from: source, to: destination)
