@@ -297,6 +297,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Further/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.sports";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Further does not read your health data. Apple requires this description wherever an app is allowed to use Health at all; the only access Further uses is saving your completed workouts.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Further saves your completed workouts to Apple Health so they count toward your Activity rings and appear alongside your other training in the Fitness app.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -334,6 +336,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Further/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.sports";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Further does not read your health data. Apple requires this description wherever an app is allowed to use Health at all; the only access Further uses is saving your completed workouts.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Further saves your completed workouts to Apple Health so they count toward your Activity rings and appear alongside your other training in the Fitness app.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
