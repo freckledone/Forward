@@ -476,6 +476,14 @@ Original:
   - The xcconfig variables become `FURTHER_TEAM_ID` / `FURTHER_BUNDLE_ID` / `FURTHER_ICLOUD_CONTAINER`, and the committed placeholder is now `com.example.Further`. The git-ignored `Config/Local.xcconfig` keeps the author's real, unchanged identity.
   - **Open:** whether to move to a `Further` bundle id and container. Doing so requires exporting a backup first, then importing after the first launch of the renamed app. Until then the identifiers read Forward while everything else reads Further, which is inconsistent but safe.
 
+### D-071 — Post-ship phase is deliberately empty of feature work
+- **Decision:** `docs/07-roadmap.md` is added. Between shipping V1 and starting V2 there is an explicit phase with **no feature work**: train on the app for roughly a month and keep a friction list. That list, not this document, is V2's input.
+- **Why:** The strongest evidence this project has produced about what to build came from one real workout — set completion should advance and open the keyboard, exercises need swapping mid-session, the session needs a clock, the target needs last time's number beside it. All four shipped, and **none were on the parking lot** that three days of planning had produced. Planning a V2 before that evidence arrives is a guess competing with data that hasn't landed yet.
+- **Alternatives:** Order the parking lot and work it; pick the largest item (an Apple Watch app) and start; ship V1 and stop.
+- **Why not:** The parking lot is mostly the author's own refusals — custom exercises were "explicit user preference" (D-011), the rest timer "explicitly rejected" (D-014), auto-adjustment would put the app "in the coach's seat" (D-007). Treating it as a backlog would rebuild features that were declined on purpose. Starting the Watch app first commits the largest scope in the project to the weakest evidence.
+- **Date:** 2026-09-09
+- **Impact:** The roadmap records reasoning rather than promises: items move only when a decision entry says so. It also carries the declines with their grounds, so they aren't silently re-litigated. Opens Q-011 (whether D-024's permanent ban on gamification stands, given the author's actual answer was the softer "maybe add them to V2") and closes Q-012 (no `Forward` strings remain in any identifier).
+
 ### D-052 — Set completion advances focus to the next set's weight field
 - **Decision:** Tapping a set's complete button moves keyboard focus to the *next* unlogged, non-skipped set's weight field. When no sets remain, focus drops and the next exercise with remaining sets expands and scrolls into view. Focus state lives on `ExpandedExerciseSection` (shared `@FocusState<SetFieldFocus?>` passed into each `WorkSetRow` as a binding), not inside the row.
 - **Why:** Real-workout feedback: completing a set left the keyboard parked on the set just finished, so every set cost an extra tap to re-target. Logging should be tap-check, type, tap-check, type.

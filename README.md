@@ -93,6 +93,11 @@ docs/          Constitution, product vision, design system, architecture,
 The suggestion engine sits behind a protocol so the algorithm can change
 without touching the UI.
 
+### `docs/07-roadmap.md`
+
+What happens next and why: what is left before V1 ships, what V2 might contain,
+and — more usefully — what has been declined and on what grounds.
+
 ### `docs/decision-log.md`
 
 Every product, UX, and architectural decision, with the alternatives that were
