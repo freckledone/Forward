@@ -2,14 +2,12 @@ import SwiftUI
 
 /// Fitness-tile-inspired card for a Workout on Home (Design System §7, D-043).
 ///
-/// The whole card is one tap target and it **starts the workout** (D-075).
-/// Starting is what you came to Home to do; editing is the rare case, and it
-/// lives on swipe and long-press instead.
+/// The card itself is inert. **Only the Start button starts the workout**
+/// (D-075), which keeps a destructive-ish action — you can't un-start a
+/// session — behind a deliberate, clearly-labelled target rather than
+/// anywhere a thumb happens to land while scrolling.
 ///
-/// That also collapses the card back to a single button. It previously held
-/// two sibling buttons so a tap could mean either thing, which needed each
-/// half to define its own hit area. The play glyph is now decoration — it
-/// signals what a tap does rather than being separately tappable.
+/// Editing lives on a trailing swipe, and Edit/Delete on a long press.
 ///
 /// - 20pt padding + 20pt continuous corner radius
 /// - Muscle-group-tinted gradient background (derived from the first exercise's
@@ -67,33 +65,15 @@ struct WorkoutCard: View {
     }
 
     var body: some View {
-        Button(action: onStart) {
-            // Centered so the play glyph sits opposite the middle of the
-            // exercise list rather than riding the title's baseline.
-            HStack(alignment: .center, spacing: 16) {
-                summary
-                    .frame(maxWidth: .infinity, alignment: .leading)
+        HStack(alignment: .center, spacing: 16) {
+            summary
+                .frame(maxWidth: .infinity, alignment: .leading)
 
-                Image(systemName: "play.fill")
-                    .font(.system(size: 26, weight: .semibold))
-                    .foregroundStyle(Color.accentColor)
-                    // play.fill's visual mass sits left of its glyph box.
-                    .offset(x: 2)
-                    .frame(width: 54, height: 54)
-                    .background {
-                        Circle().fill(Color.accentColor.opacity(0.12))
-                    }
-                    .accessibilityHidden(true)
-            }
-            .padding(20)
-            .cardSurface(tint: tintMuscle)
-            .contentShape(
-                RoundedRectangle(cornerRadius: CornerRadius.card, style: .continuous)
-            )
+            StartButton(action: onStart)
+                .accessibilityLabel("Start \(workout.name.isEmpty ? "Untitled" : workout.name)")
         }
-        .buttonStyle(.plain)
-        .accessibilityLabel("Start \(workout.name.isEmpty ? "Untitled" : workout.name)")
-        .accessibilityHint(countsLine)
+        .padding(20)
+        .cardSurface(tint: tintMuscle)
     }
 
     private var summary: some View {
