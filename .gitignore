@@ -61,7 +61,7 @@ fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
 
-## Added for Forward
+## Added for Further
 
 # macOS
 .DS_Store

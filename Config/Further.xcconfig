@@ -1,4 +1,4 @@
-// Build identity for Forward.
+// Build identity for Further.
 //
 // The defaults below are placeholders, so this repository carries no personal
 // Apple Developer identifiers. As-is they are enough to build and run in the
@@ -11,17 +11,17 @@
 
 // Your Apple Developer Team ID (Membership page in the developer portal).
 // Empty means "no team": the Simulator builds, device builds won't sign.
-FORWARD_TEAM_ID =
+FURTHER_TEAM_ID =
 
 // Reverse-DNS bundle identifier. Must be unique to you.
-FORWARD_BUNDLE_ID = com.example.Forward
+FURTHER_BUNDLE_ID = com.example.Further
 
 // CloudKit container. Apple's convention is "iCloud." + your bundle id, and it
 // must match the container you provision in Signing & Capabilities.
-FORWARD_ICLOUD_CONTAINER = iCloud.com.example.Forward
+FURTHER_ICLOUD_CONTAINER = iCloud.com.example.Further
 
 // Included AFTER the defaults so it overrides them — in an xcconfig the last
 // assignment wins, so an include placed above would be silently discarded.
 #include? "Local.xcconfig"
 
-DEVELOPMENT_TEAM = $(FORWARD_TEAM_ID)
+DEVELOPMENT_TEAM = $(FURTHER_TEAM_ID)

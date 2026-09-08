@@ -1,6 +1,6 @@
 import Testing
 import Foundation
-@testable import Forward
+@testable import Further
 
 /// The bundled catalog is loaded once at launch and a bad file is fatal:
 /// `load()` builds its index with `Dictionary(uniqueKeysWithValues:)`, which

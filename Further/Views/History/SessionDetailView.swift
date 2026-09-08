@@ -331,7 +331,7 @@ struct SessionDetailView: View {
     // MARK: - Actions
 
     /// Deleting a session also removes its mirrored `HKWorkout`, so Health
-    /// doesn't keep a workout Forward no longer believes in. Captured before
+    /// doesn't keep a workout Further no longer believes in. Captured before
     /// the delete, because the model object is gone straight afterwards.
     private func delete() {
         let mirroredWorkout = session.healthKitWorkoutUUID

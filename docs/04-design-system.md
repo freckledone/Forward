@@ -1,10 +1,10 @@
 # 04 — Design System
 
-Source of truth for Forward's visual and interaction language.
+Source of truth for Further's visual and interaction language.
 
 Governing principle: **Apple's language, spoken confidently.** The reference isn't Settings — it's **Fitness** and **Weather**. Native means we use system fonts, semantic colors, standard controls, and Dynamic Type. It does NOT mean plain. Fitness uses gradients, hero numeric displays, tinted cards, and rich chart fills — all of that is fair game. What we reject is *anti-Apple* aesthetics: startup-SaaS card stacks, neon marketing gradients, gamification confetti, custom fonts, custom nav bars.
 
-Anything that would look at home in the current Apple Fitness app is on the table for Forward.
+Anything that would look at home in the current Apple Fitness app is on the table for Further.
 
 ---
 

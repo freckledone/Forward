@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Coverage pass over Forward/Resources/exercises.json.
+Coverage pass over Further/Resources/exercises.json.
 
 Applies per D-037:
   - Rename ugly source names on the user's active exercises to preferred names
@@ -8,7 +8,7 @@ Applies per D-037:
   - Correct primary-muscle metadata where the source data is wrong
   - Add new entries for exercises the user does that the source lacks
 
-Idempotent: safe to re-run. Overwrites Forward/Resources/exercises.json.
+Idempotent: safe to re-run. Overwrites Further/Resources/exercises.json.
 
 Provenance: user's active-exercise list comes from a MacroFactor training-program
 export dated 2026-08-31. This script encodes the coverage decisions in code
@@ -21,7 +21,7 @@ import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
-JSON_PATH = REPO / "Forward" / "Resources" / "exercises.json"
+JSON_PATH = REPO / "Further" / "Resources" / "exercises.json"
 
 # --- Renames (id → new display name). Existing id preserved to keep any references stable.
 RENAMES: dict[str, str] = {

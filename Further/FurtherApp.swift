@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 @main
-struct ForwardApp: App {
+struct FurtherApp: App {
 
     // ModelContainer wired to the V1 schema (D-030, D-033, D-034), backed by
     // the private CloudKit database (D-061).

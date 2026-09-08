@@ -1,13 +1,13 @@
 //
-//  ForwardUITestsLaunchTests.swift
-//  ForwardUITests
+//  FurtherUITestsLaunchTests.swift
+//  FurtherUITests
 //
 //  Created by Yuri Gurgenidze on 06/09/2026.
 //
 
 import XCTest
 
-final class ForwardUITestsLaunchTests: XCTestCase {
+final class FurtherUITestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true

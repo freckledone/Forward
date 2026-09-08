@@ -139,9 +139,9 @@ enum DataArchive {
             case .unreadableFile:
                 return "That file couldn't be opened."
             case .malformedJSON(let detail):
-                return "That file isn't a valid Forward backup. (\(detail))"
+                return "That file isn't a valid Further backup. (\(detail))"
             case .futureFormat(let version):
-                return "This backup was made by a newer version of Forward (format \(version)). Update the app, then try again."
+                return "This backup was made by a newer version of Further (format \(version)). Update the app, then try again."
             }
         }
     }
@@ -150,14 +150,14 @@ enum DataArchive {
 
     static func export(from context: ModelContext) throws -> Data {
         let programs = try context.fetch(
-            FetchDescriptor<Forward.Program>(sortBy: [SortDescriptor(\.displayOrder)])
+            FetchDescriptor<Further.Program>(sortBy: [SortDescriptor(\.displayOrder)])
         )
-        let allWorkouts = try context.fetch(FetchDescriptor<Forward.Workout>())
+        let allWorkouts = try context.fetch(FetchDescriptor<Further.Workout>())
         let sessions = try context.fetch(
-            FetchDescriptor<Forward.Session>(sortBy: [SortDescriptor(\.startedAt)])
+            FetchDescriptor<Further.Session>(sortBy: [SortDescriptor(\.startedAt)])
         )
-        let flags = try context.fetch(FetchDescriptor<Forward.ExerciseUserFlag>())
-        let prefs = try context.fetch(FetchDescriptor<Forward.UserPreferences>()).first
+        let flags = try context.fetch(FetchDescriptor<Further.ExerciseUserFlag>())
+        let prefs = try context.fetch(FetchDescriptor<Further.UserPreferences>()).first
 
         let document = Document(
             formatVersion: currentFormatVersion,
@@ -188,7 +188,7 @@ enum DataArchive {
         return try makeEncoder().encode(document)
     }
 
-    private static func encodeProgram(_ program: Forward.Program) -> Document.Program {
+    private static func encodeProgram(_ program: Further.Program) -> Document.Program {
         Document.Program(
             id: program.id,
             name: program.name,
@@ -201,7 +201,7 @@ enum DataArchive {
         )
     }
 
-    private static func encodeWorkout(_ workout: Forward.Workout) -> Document.Workout {
+    private static func encodeWorkout(_ workout: Further.Workout) -> Document.Workout {
         Document.Workout(
             id: workout.id,
             name: workout.name,
@@ -224,7 +224,7 @@ enum DataArchive {
         )
     }
 
-    private static func encodeSession(_ session: Forward.Session) -> Document.Session {
+    private static func encodeSession(_ session: Further.Session) -> Document.Session {
         Document.Session(
             id: session.id,
             startedAt: session.startedAt,
@@ -314,10 +314,10 @@ enum DataArchive {
         var summary = ImportSummary()
 
         // Existing ids, gathered once — an id already present always wins.
-        var knownPrograms = Set(try context.fetch(FetchDescriptor<Forward.Program>()).map(\.id))
-        var knownWorkouts = Set(try context.fetch(FetchDescriptor<Forward.Workout>()).map(\.id))
-        let knownSessions = Set(try context.fetch(FetchDescriptor<Forward.Session>()).map(\.id))
-        let knownFlags = Set(try context.fetch(FetchDescriptor<Forward.ExerciseUserFlag>()).map(\.exerciseId))
+        var knownPrograms = Set(try context.fetch(FetchDescriptor<Further.Program>()).map(\.id))
+        var knownWorkouts = Set(try context.fetch(FetchDescriptor<Further.Workout>()).map(\.id))
+        let knownSessions = Set(try context.fetch(FetchDescriptor<Further.Session>()).map(\.id))
+        let knownFlags = Set(try context.fetch(FetchDescriptor<Further.ExerciseUserFlag>()).map(\.exerciseId))
 
         for archived in document.programs {
             guard !knownPrograms.contains(archived.id) else {
@@ -334,7 +334,7 @@ enum DataArchive {
                 continue
             }
 
-            let program = Forward.Program(name: archived.name, displayOrder: archived.displayOrder)
+            let program = Further.Program(name: archived.name, displayOrder: archived.displayOrder)
             program.id = archived.id
             program.createdAt = archived.createdAt
             program.updatedAt = archived.updatedAt
@@ -369,7 +369,7 @@ enum DataArchive {
                 summary.skipped += 1
                 continue
             }
-            let flag = Forward.ExerciseUserFlag(exerciseId: archived.exerciseId, isKey: archived.isKey)
+            let flag = Further.ExerciseUserFlag(exerciseId: archived.exerciseId, isKey: archived.isKey)
             flag.id = archived.id
             flag.updatedAt = archived.updatedAt
             context.insert(flag)
@@ -380,8 +380,8 @@ enum DataArchive {
         // fresh install being restored. Merging into a configured app must
         // not silently flip the user's unit setting out from under them.
         if let archivedPrefs = document.preferences,
-           try context.fetch(FetchDescriptor<Forward.UserPreferences>()).isEmpty {
-            let prefs = Forward.UserPreferences()
+           try context.fetch(FetchDescriptor<Further.UserPreferences>()).isEmpty {
+            let prefs = Further.UserPreferences()
             prefs.displayUnitRaw = archivedPrefs.displayUnitRaw
             prefs.healthKitEnabled = archivedPrefs.healthKitEnabled
             context.insert(prefs)
@@ -393,9 +393,9 @@ enum DataArchive {
 
     // MARK: - Insert helpers
 
-    private static func findProgram(id: UUID, in context: ModelContext) throws -> Forward.Program? {
-        var descriptor = FetchDescriptor<Forward.Program>(
-            predicate: #Predicate<Forward.Program> { $0.id == id }
+    private static func findProgram(id: UUID, in context: ModelContext) throws -> Further.Program? {
+        var descriptor = FetchDescriptor<Further.Program>(
+            predicate: #Predicate<Further.Program> { $0.id == id }
         )
         descriptor.fetchLimit = 1
         return try context.fetch(descriptor).first
@@ -403,10 +403,10 @@ enum DataArchive {
 
     private static func insert(
         _ archived: Document.Workout,
-        into program: Forward.Program?,
+        into program: Further.Program?,
         context: ModelContext
     ) {
-        let workout = Forward.Workout(name: archived.name, displayOrder: archived.displayOrder)
+        let workout = Further.Workout(name: archived.name, displayOrder: archived.displayOrder)
         workout.id = archived.id
         workout.createdAt = archived.createdAt
         workout.updatedAt = archived.updatedAt
@@ -415,7 +415,7 @@ enum DataArchive {
         context.insert(workout)
 
         for archivedExercise in archived.exercises {
-            let we = Forward.WorkoutExercise(
+            let we = Further.WorkoutExercise(
                 exerciseId: archivedExercise.exerciseId,
                 displayOrder: archivedExercise.displayOrder,
                 targetSets: archivedExercise.targetSets,
@@ -429,7 +429,7 @@ enum DataArchive {
     }
 
     private static func insert(_ archived: Document.Session, context: ModelContext) {
-        let session = Forward.Session(
+        let session = Further.Session(
             startedAt: archived.startedAt,
             workoutId: archived.workoutId,
             workoutNameSnapshot: archived.workoutNameSnapshot,
@@ -443,7 +443,7 @@ enum DataArchive {
         context.insert(session)
 
         for archivedExercise in archived.exercises {
-            let se = Forward.SessionExercise(
+            let se = Further.SessionExercise(
                 exerciseId: archivedExercise.exerciseId,
                 exerciseNameSnapshot: archivedExercise.exerciseNameSnapshot,
                 displayOrder: archivedExercise.displayOrder,
@@ -456,7 +456,7 @@ enum DataArchive {
             context.insert(se)
 
             for archivedSet in archivedExercise.sets {
-                let set = Forward.WorkSet(
+                let set = Further.WorkSet(
                     order: archivedSet.order,
                     weightKg: archivedSet.weightKg,
                     reps: archivedSet.reps,

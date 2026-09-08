@@ -99,8 +99,8 @@ struct SettingsView: View {
             if restartRequired {
                 Label(
                     syncEnabled
-                        ? "Restart Forward to start syncing."
-                        : "Restart Forward to stop syncing.",
+                        ? "Restart Further to start syncing."
+                        : "Restart Further to stop syncing.",
                     systemImage: "arrow.clockwise"
                 )
                 .font(.footnote)
@@ -154,7 +154,7 @@ struct SettingsView: View {
 
             if prefs.healthKitEnabled, healthWriter.isDenied {
                 Label(
-                    "Permission denied — enable Forward in Settings › Health › Data Access & Devices.",
+                    "Permission denied — enable Further in Settings › Health › Data Access & Devices.",
                     systemImage: "exclamationmark.triangle"
                 )
                 .font(.footnote)
@@ -164,7 +164,7 @@ struct SettingsView: View {
             Text("Apple Health")
         } footer: {
             Text(healthWriter.isAvailable
-                 ? "Finished workouts are added to Health as strength training, so they count toward your Activity rings. Forward only writes — it never reads your health data, and it doesn't estimate calories."
+                 ? "Finished workouts are added to Health as strength training, so they count toward your Activity rings. Further only writes — it never reads your health data, and it doesn't estimate calories."
                  : "Apple Health isn't available on this device.")
         }
     }
@@ -209,7 +209,7 @@ struct SettingsView: View {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "yyyy-MM-dd"
-        return "Forward-Backup-\(formatter.string(from: Date()))"
+        return "Further-Backup-\(formatter.string(from: Date()))"
     }
 
     private func startExport() {

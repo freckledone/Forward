@@ -9,7 +9,7 @@ import Observation
 /// knowing and neither is observable from the model layer alone:
 ///
 ///  1. whether the `ModelContainer` was built with CloudKit backing at all
-///     (`ForwardApp` falls back to a local store if the container can't be
+///     (`FurtherApp` falls back to a local store if the container can't be
 ///     opened, rather than crashing at launch),
 ///  2. whether the device is signed into iCloud, and
 ///  3. whether the mirroring engine is actually completing its import/export
@@ -28,12 +28,12 @@ import Observation
 final class SyncStatus {
 
     /// Read from Info.plist rather than hardcoded, so the identifier has a
-    /// single source of truth: `FORWARD_ICLOUD_CONTAINER` in
-    /// `Config/Forward.xcconfig`, which also fills in the entitlement. Forking
+    /// single source of truth: `FURTHER_ICLOUD_CONTAINER` in
+    /// `Config/Further.xcconfig`, which also fills in the entitlement. Forking
     /// the project means editing one config file, not hunting literals.
     static let containerIdentifier: String = {
-        let value = Bundle.main.object(forInfoDictionaryKey: "ForwardCloudKitContainer") as? String
-        return value?.isEmpty == false ? value! : "iCloud.com.example.Forward"
+        let value = Bundle.main.object(forInfoDictionaryKey: "FurtherCloudKitContainer") as? String
+        return value?.isEmpty == false ? value! : "iCloud.com.example.Further"
     }()
 
     /// The user's sync preference, in `UserDefaults` rather than

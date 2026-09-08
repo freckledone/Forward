@@ -1,7 +1,7 @@
 import Testing
 import SwiftData
 import Foundation
-@testable import Forward
+@testable import Further
 
 /// `SessionLifecycle` is the only code that creates and rewrites logged
 /// training data, and `swapExercise` destroys set state by design. It had no

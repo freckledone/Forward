@@ -1,6 +1,6 @@
 # 00 — Constitution
 
-Non-negotiable principles for **Forward** (working name).
+Non-negotiable principles for **Further** (working name).
 
 This document changes only through an explicit, dated entry in `decision-log.md`. It is not modified silently.
 

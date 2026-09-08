@@ -30,9 +30,22 @@
 		7BFB7C01304DE0AB00220DC6 /* Further.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Further.xcconfig; path = Config/Further.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		7BFB7AF5304DE0AB00220DC6 /* Exceptions for "Further" folder in "Further" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 7BFB7AD1304DE0A900220DC6 /* Further */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		7BFB7AD4304DE0A900220DC6 /* Further */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				7BFB7AF5304DE0AB00220DC6 /* Exceptions for "Further" folder in "Further" target */,
+			);
 			path = Further;
 			sourceTree = "<group>";
 		};
@@ -188,7 +201,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 7BFB7ACD304DE0A900220DC6 /* Build configuration list for PBXProject "Forward" */;
+			buildConfigurationList = 7BFB7ACD304DE0A900220DC6 /* Build configuration list for PBXProject "Further" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -555,7 +568,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		7BFB7ACD304DE0A900220DC6 /* Build configuration list for PBXProject "Forward" */ = {
+		7BFB7ACD304DE0A900220DC6 /* Build configuration list for PBXProject "Further" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7BFB7AF9304DE0AB00220DC6 /* Debug */,

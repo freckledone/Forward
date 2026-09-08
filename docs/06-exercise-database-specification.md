@@ -1,6 +1,6 @@
 # 06 — Exercise Database Specification
 
-Source of truth for Forward's bundled exercise database. All schema, taxonomy, and provenance decisions here are backed by decision-log entries. Changing the schema or enum values requires a new decision entry.
+Source of truth for Further's bundled exercise database. All schema, taxonomy, and provenance decisions here are backed by decision-log entries. Changing the schema or enum values requires a new decision entry.
 
 ---
 
@@ -9,7 +9,7 @@ Source of truth for Forward's bundled exercise database. All schema, taxonomy, a
 - **Source:** [Free Exercise DB](https://github.com/yuhonas/free-exercise-db)
 - **License:** The Unlicense (public-domain dedication). Verified via GitHub API on 2026-09-06.
 - **Terms:** unrestricted use, modification, redistribution. No attribution required.
-- **Courtesy attribution:** We credit Free Exercise DB in the Forward README when the repo goes public (Q-009 pending). Not a legal obligation.
+- **Courtesy attribution:** We credit Free Exercise DB in the Further README when the repo goes public (Q-009 pending). Not a legal obligation.
 
 Per **D-035**, we ingest their data via a reproducible transformation script; we do NOT vendor their raw JSON. The bundled `exercises.json` in the app is a filtered, remapped, quality-controlled subset.
 
@@ -159,7 +159,7 @@ After transformation, the resulting ~600-exercise pool is filtered to the ~60–
 
 ## 5. Bundled loading
 
-- File path in Xcode target: `Forward/Resources/exercises.json`.
+- File path in Xcode target: `Further/Resources/exercises.json`.
 - Loaded once at app startup by an `ExerciseCatalog` (or similarly named) service.
 - Parsed into a `[String: Exercise]` dictionary keyed by `id`.
 - Held in memory for the app's lifetime; not written to SwiftData (D-031).
