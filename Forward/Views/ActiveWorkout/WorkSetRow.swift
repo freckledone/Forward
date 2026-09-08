@@ -34,6 +34,10 @@ struct WorkSetRow: View {
     /// Shared with every sibling row via `ExpandedExerciseSection`.
     @FocusState.Binding var focusedField: SetFieldFocus?
 
+    @Environment(\.dynamicTypeSize) private var typeSize
+
+    @ScaledMetric(relativeTo: .title2) private var completeGlyph: CGFloat = 26
+
     @State private var weightText: String = ""
     @State private var repsText: String = ""
 
@@ -44,25 +48,7 @@ struct WorkSetRow: View {
     private var isSkipped: Bool { workSet.skipped }
 
     var body: some View {
-        HStack(spacing: 10) {
-            setNumber
-
-            weightField
-                .frame(minWidth: 66, maxWidth: 92)
-
-            Text("×")
-                .font(.callout)
-                .foregroundStyle(.tertiary)
-
-            repsField
-                .frame(minWidth: 40, maxWidth: 56)
-
-            rirChip
-
-            Spacer(minLength: 4)
-
-            completeButton
-        }
+        layout
         .padding(.vertical, 10)
         .padding(.horizontal, 10)
         .background {
@@ -122,6 +108,56 @@ struct WorkSetRow: View {
         }
     }
 
+    // MARK: - Layout
+
+    /// Six controls on one line stops fitting well before the largest text
+    /// sizes: the weight field is squeezed until it can't show three digits,
+    /// and the effort chip wraps to a column of letters. Past
+    /// `.accessibility1` the row splits in two — entry on top, effort and the
+    /// completion tick below — rather than being compressed until unusable.
+    @ViewBuilder
+    private var layout: some View {
+        if typeSize >= .accessibility1 {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(spacing: 10) {
+                    setNumber
+                    weightField
+                    multiplySign
+                    repsField
+                }
+                HStack(spacing: 10) {
+                    rirChip
+                    Spacer(minLength: 4)
+                    completeButton
+                }
+            }
+        } else {
+            HStack(spacing: 10) {
+                setNumber
+
+                weightField
+                    .frame(minWidth: 66, maxWidth: 92)
+
+                multiplySign
+
+                repsField
+                    .frame(minWidth: 40, maxWidth: 56)
+
+                rirChip
+
+                Spacer(minLength: 4)
+
+                completeButton
+            }
+        }
+    }
+
+    private var multiplySign: some View {
+        Text("×")
+            .font(.callout)
+            .foregroundStyle(.tertiary)
+    }
+
     // MARK: - Pieces
 
     private var setNumber: some View {
@@ -130,6 +166,7 @@ struct WorkSetRow: View {
             .monospacedDigit()
             .foregroundStyle(.secondary)
             .frame(width: 18, alignment: .leading)
+            .accessibilityLabel("Set \(workSet.order + 1)")
     }
 
     private var weightField: some View {
@@ -205,12 +242,14 @@ struct WorkSetRow: View {
             toggleComplete()
         } label: {
             Image(systemName: isCompleted ? "checkmark.circle.fill" : "circle")
-                .font(.system(size: 26, weight: .semibold))
+                .font(.system(size: completeGlyph, weight: .semibold))
                 .foregroundStyle(isCompleted ? Color.accentColor : Color.secondary)
                 .symbolEffect(.bounce, value: isCompleted)
                 .contentTransition(.symbolEffect(.replace))
         }
         .buttonStyle(.plain)
+        .frame(minWidth: 44, minHeight: 44)
+        .contentShape(Rectangle())
         .accessibilityLabel(isCompleted ? "Mark set incomplete" : "Mark set complete")
     }
 

@@ -9,6 +9,10 @@ import Charts
 /// Trend: 12-week mini chart (no axes / no marks — visual only).
 /// Footer: last-session summary.
 struct ProgressCard: View {
+    /// A literal point size ignores Dynamic Type entirely. `@ScaledMetric`
+    /// keeps the intended size at the default setting and scales from there.
+    @ScaledMetric(relativeTo: .largeTitle) private var heroSize: CGFloat = 44
+
     let exercise: Exercise
 
     @Environment(\.modelContext) private var modelContext
@@ -76,7 +80,7 @@ struct ProgressCard: View {
         HStack(alignment: .lastTextBaseline, spacing: 6) {
             if let top = stats?.currentTopSet {
                 Text(UnitConversion.display(weightKg: top.weightKg, unit: displayUnit))
-                    .font(.system(size: 44, weight: .bold, design: .rounded))
+                    .font(.system(size: heroSize, weight: .bold, design: .rounded))
                     .monospacedDigit()
                     .foregroundStyle(.primary)
                 Text("× \(top.reps)")
@@ -85,7 +89,7 @@ struct ProgressCard: View {
                     .monospacedDigit()
             } else {
                 Text("—")
-                    .font(.system(size: 44, weight: .bold, design: .rounded))
+                    .font(.system(size: heroSize, weight: .bold, design: .rounded))
                     .foregroundStyle(.tertiary)
                 Text("no data yet")
                     .font(.footnote)

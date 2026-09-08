@@ -142,7 +142,8 @@ struct ExpandedExerciseSection: View {
             Image(systemName: "arrow.triangle.2.circlepath")
                 .font(.system(size: 17, weight: .semibold))
                 .foregroundStyle(.secondary)
-                .frame(width: 36, height: 36)
+                // 44pt is Apple's minimum touch target; the glyph stays small.
+                .frame(width: 44, height: 44)
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

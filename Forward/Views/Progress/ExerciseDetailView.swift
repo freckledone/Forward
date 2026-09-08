@@ -13,6 +13,8 @@ struct ExerciseDetailView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.colorScheme) private var colorScheme
 
+    @ScaledMetric(relativeTo: .largeTitle) private var heroSize: CGFloat = 34
+
     @Query private var flags: [ExerciseUserFlag]
     @Query private var prefsList: [UserPreferences]
 
@@ -138,7 +140,7 @@ struct ExerciseDetailView: View {
                         .foregroundStyle(.secondary)
                     HStack(alignment: .lastTextBaseline, spacing: 6) {
                         Text(UnitConversion.display(weightKg: current.weightKg, unit: displayUnit))
-                            .font(.system(size: 34, weight: .bold, design: .rounded))
+                            .font(.system(size: heroSize, weight: .bold, design: .rounded))
                             .monospacedDigit()
                         Text("× \(current.reps)")
                             .font(.system(.title3, design: .rounded, weight: .semibold))

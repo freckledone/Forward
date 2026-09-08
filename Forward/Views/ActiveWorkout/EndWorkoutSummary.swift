@@ -24,6 +24,9 @@ struct EndWorkoutSummary: View {
     @State private var achievedPRs: [ProgressCalculator.AchievedPR] = []
     @State private var didFireHaptic = false
 
+    @ScaledMetric(relativeTo: .largeTitle) private var titleSize: CGFloat = 34
+    @ScaledMetric(relativeTo: .largeTitle) private var statSize: CGFloat = 32
+
     private var durationString: String {
         guard let ended = session.endedAt else { return "—" }
         let seconds = ended.timeIntervalSince(session.startedAt)
@@ -117,7 +120,7 @@ struct EndWorkoutSummary: View {
                     .foregroundStyle(Color.accentColor)
             }
             Text(session.workoutNameSnapshot ?? "Workout")
-                .font(.system(size: 34, weight: .bold, design: .rounded))
+                .font(.system(size: titleSize, weight: .bold, design: .rounded))
                 .foregroundStyle(.primary)
             Text(session.startedAt, style: .date)
                 .font(.subheadline)
@@ -137,7 +140,7 @@ struct EndWorkoutSummary: View {
     private func statCard(value: String, label: String) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(value)
-                .font(.system(size: 32, weight: .bold, design: .rounded))
+                .font(.system(size: statSize, weight: .bold, design: .rounded))
                 .monospacedDigit()
             Text(label)
                 .font(.footnote.weight(.medium))

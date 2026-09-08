@@ -180,7 +180,7 @@ struct WorkoutsRoot: View {
                 Image(systemName: "ellipsis.circle")
                     .font(.title3)
                     .foregroundStyle(.secondary)
-                    .frame(width: 32, height: 32)
+                    .frame(width: 44, height: 44)
                     .contentShape(Rectangle())
             }
         }

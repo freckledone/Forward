@@ -25,6 +25,8 @@ struct SessionDetailView: View {
     private var displayUnit: DisplayUnit { prefsList.first?.unit ?? .kg }
 
     @State private var confirmDelete = false
+
+    @ScaledMetric(relativeTo: .largeTitle) private var durationSize: CGFloat = 40
     @State private var prCount = 0
     /// Keyed by `SessionExercise.id`. Raw numbers only — formatting happens in
     /// the view so a unit change doesn't need a recompute.
@@ -95,7 +97,7 @@ struct SessionDetailView: View {
                     .foregroundStyle(.secondary)
 
                 Text(durationString)
-                    .font(.system(size: 40, weight: .bold, design: .rounded))
+                    .font(.system(size: durationSize, weight: .bold, design: .rounded))
                     .monospacedDigit()
                     .foregroundStyle(.primary)
                     .lineLimit(1)
