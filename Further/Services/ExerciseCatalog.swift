@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import SwiftData
 
 /// Loads and serves the bundled exercise database (D-031).
 ///
@@ -12,11 +13,40 @@ import Observation
 /// `docs/06-exercise-database-specification.md` §6.
 @Observable
 final class ExerciseCatalog {
+    /// Bundled entries, loaded once from JSON. Never changes at runtime.
+    private(set) var bundled: [Exercise] = []
+    /// User-authored entries, refreshed from the store (D-073).
+    private(set) var custom: [Exercise] = []
+
     private(set) var all: [Exercise] = []
     private(set) var byId: [String: Exercise] = [:]
 
     init() {
         load()
+    }
+
+    // MARK: - Custom exercises
+
+    /// Fold the user's own exercises in alongside the bundled ones.
+    ///
+    /// Called on launch and after any edit. Everything downstream — lookup,
+    /// search, filters, card tints — then treats the two identically, because
+    /// a `CustomExercise` is projected to an `Exercise` before it gets here.
+    @MainActor
+    func refreshCustom(from context: ModelContext) {
+        let fetched = (try? context.fetch(FetchDescriptor<CustomExercise>())) ?? []
+        custom = fetched.map(\.asExercise)
+        reindex()
+    }
+
+    private func reindex() {
+        let merged = (bundled + custom).sorted {
+            $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
+        }
+        all = merged
+        // Later wins on a duplicate slug. `custom-` prefixing makes that
+        // impossible between the two sets, so this only guards a bad bundle.
+        byId = Dictionary(merged.map { ($0.id, $0) }, uniquingKeysWith: { _, latest in latest })
     }
 
     // MARK: - Lookup
@@ -93,8 +123,8 @@ final class ExerciseCatalog {
             let sorted = decoded.sorted {
                 $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
             }
-            self.all = sorted
-            self.byId = Dictionary(uniqueKeysWithValues: sorted.map { ($0.id, $0) })
+            self.bundled = sorted
+            reindex()
         } catch {
             assertionFailure("Failed to decode exercises.json: \(error)")
         }

@@ -19,6 +19,10 @@ final class WorkSet {
     var weightKg: Double = 0
     var reps: Int = 0
     var rir: Int?
+    /// Seconds held, for `.timed` exercises (D-072). Nil on rep-based sets.
+    /// Optional and defaulted, so adding it is a lightweight CloudKit-safe
+    /// migration.
+    var durationSeconds: Int?
     var completedAt: Date?
     var skipped: Bool = false
     var sessionExercise: SessionExercise?
@@ -27,12 +31,14 @@ final class WorkSet {
         order: Int = 0,
         weightKg: Double = 0,
         reps: Int = 0,
-        rir: Int? = nil
+        rir: Int? = nil,
+        durationSeconds: Int? = nil
     ) {
         self.id = UUID()
         self.order = order
         self.weightKg = weightKg
         self.reps = reps
         self.rir = rir
+        self.durationSeconds = durationSeconds
     }
 }

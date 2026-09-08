@@ -79,7 +79,11 @@ enum ProgressCalculator {
         // Per-rep-count PRs across every completed non-skipped set ever.
         var repMaxes: [Int: Double] = [:]
         for se in allInstances {
-            let completed = (se.sets ?? []).filter { $0.completedAt != nil && !$0.skipped }
+            let completed = (se.sets ?? []).filter {
+                // Timed sets have no rep count, so every one of them would
+                // collide on key 0 and report a nonsense "0-rep PR".
+                $0.completedAt != nil && !$0.skipped && $0.durationSeconds == nil
+            }
             for s in completed {
                 let existing = repMaxes[s.reps] ?? 0
                 if s.weightKg > existing {
@@ -101,8 +105,13 @@ enum ProgressCalculator {
 
     // MARK: - Helpers
 
-    /// "Top set" is heaviest weight; ties broken by higher rep count.
+    /// "Top set" is heaviest weight, ties broken by higher rep count — except
+    /// for timed sets, where the best set is the longest hold (D-072).
     private static func setOrder(_ a: WorkSet, _ b: WorkSet) -> Bool {
+        if let da = a.durationSeconds, let db = b.durationSeconds {
+            if da != db { return da < db }
+            return a.weightKg < b.weightKg
+        }
         if a.weightKg != b.weightKg { return a.weightKg < b.weightKg }
         return a.reps < b.reps
     }
@@ -310,7 +319,7 @@ enum ProgressCalculator {
                 context: context
             )
 
-            for s in completed {
+            for s in completed where s.durationSeconds == nil {
                 let previousBest = historicalMaxes[s.reps] ?? 0
                 guard s.weightKg > previousBest else { continue }
 
@@ -360,7 +369,7 @@ enum ProgressCalculator {
                   session.endedAt != nil
             else { continue }
 
-            for s in (se.sets ?? []) where s.completedAt != nil && !s.skipped {
+            for s in (se.sets ?? []) where s.completedAt != nil && !s.skipped && s.durationSeconds == nil {
                 let existing = maxes[s.reps] ?? 0
                 if s.weightKg > existing {
                     maxes[s.reps] = s.weightKg

@@ -74,30 +74,40 @@ evidence that hasn't arrived yet.
 Unordered until Phase B produces its list. Recorded now so the reasoning isn't
 re-derived later.
 
-### Likely
+### In progress
 
 **Timed exercises** (D-010, D-042). The only parking-lot item that is a concrete
 hole rather than a preference: Side Plank is in the author's own program and the
-data model cannot represent it. Adds a `.timed` loading mode, a duration input,
-and a decision about what a "PR" means for time.
+data model cannot represent it. Shipped 2026-09-09 (D-072): a `.timed` loading mode, a
+duration field on `WorkSet`, hold targets on the workout and its session
+snapshot, and a "best set = longest hold" rule for progress.
 
-**Live Activity.** Session timer and current exercise on the Lock Screen and in
-the Dynamic Island. Between sets the phone is face-down on a bench; this is the
-one place the app could be useful without being opened. Small next to a Watch
-app, and it does not add a screen.
+**Custom exercises** (D-011). Shipped 2026-09-09 (D-073): a `CustomExercise`
+model projected into an `Exercise`, merged into the catalog so every existing
+lookup, search and filter path works unchanged, with a form mirroring the
+bundled JSON schema field-for-field.
 
-**Custom exercises** (D-011). 590 entries will eventually miss something, and
-today that is a dead end with no workaround. Fits the existing architecture: a
-`CustomExercise` model keyed by UUID, unioned into search results with a visual
-distinction (docs/06 §12).
+**Live Activity.** Still to build. Needs a Widget Extension target, which has to
+be added through Xcode's template rather than by editing the project file.
 
-### Serious but large
+### Planned, not started — Apple Watch app
 
-**Apple Watch app.** Never on the parking lot, and the single largest possible
-reduction in logging friction — the phone stays in the bag. Directly serves the
-constitution's first clause. Also the biggest scope in this document by a wide
-margin: a second target, a second UI, and a sync story between them. Worth its
-own set of decisions before any code.
+Accepted into the roadmap 2026-09-09; **no implementation yet, deliberately.**
+
+The single largest possible reduction in logging friction: the phone stays in
+the bag and sets are logged from the wrist. It serves the constitution's first
+clause more directly than anything else in this document, and it is also the
+largest scope in it by a wide margin — a second target, a second interface, and
+a sync story between them.
+
+Two things should happen before any code:
+
+1. **Phase B's friction list.** A Watch app is a bet on *where* logging is
+   awkward. Wearing V1 to the gym for a month is how that gets answered rather
+   than assumed.
+2. **Its own decisions.** Whether the Watch is a remote for the phone or an
+   independent logger; what happens when they disagree; whether the phone app
+   changes at all. Each is a decision-log entry, not an implementation detail.
 
 ### Explicitly not planned
 

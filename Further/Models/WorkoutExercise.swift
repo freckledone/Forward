@@ -20,6 +20,8 @@ final class WorkoutExercise {
     var targetSets: Int = 0
     var targetRepsMin: Int = 0
     var targetRepsMax: Int = 0
+    /// Target hold in seconds for `.timed` exercises (D-072). Nil otherwise.
+    var targetDurationSeconds: Int?
     var workout: Workout?
 
     init(
@@ -27,7 +29,8 @@ final class WorkoutExercise {
         displayOrder: Int = 0,
         targetSets: Int = 0,
         targetRepsMin: Int = 0,
-        targetRepsMax: Int = 0
+        targetRepsMax: Int = 0,
+        targetDurationSeconds: Int? = nil
     ) {
         self.id = UUID()
         self.exerciseId = exerciseId
@@ -35,5 +38,6 @@ final class WorkoutExercise {
         self.targetSets = targetSets
         self.targetRepsMin = targetRepsMin
         self.targetRepsMax = targetRepsMax
+        self.targetDurationSeconds = targetDurationSeconds
     }
 }

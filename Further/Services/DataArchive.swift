@@ -34,6 +34,9 @@ enum DataArchive {
         var unassignedWorkouts: [Workout]
         var sessions: [Session]
         var exerciseFlags: [ExerciseFlag]
+        /// User-authored exercises (D-073). Absent in files written before
+        /// custom exercises existed, hence optional with an empty default.
+        var customExercises: [CustomExerciseRecord]?
 
         struct Preferences: Codable {
             var displayUnitRaw: String
@@ -66,6 +69,7 @@ enum DataArchive {
             var targetSets: Int
             var targetRepsMin: Int
             var targetRepsMax: Int
+            var targetDurationSeconds: Int?
         }
 
         struct Session: Codable {
@@ -89,6 +93,7 @@ enum DataArchive {
             var targetSets: Int
             var targetRepsMin: Int
             var targetRepsMax: Int
+            var targetDurationSeconds: Int?
             var sets: [WorkSet]
         }
 
@@ -98,8 +103,24 @@ enum DataArchive {
             var weightKg: Double
             var reps: Int
             var rir: Int?
+            var durationSeconds: Int?
             var completedAt: Date?
             var skipped: Bool
+        }
+
+        struct CustomExerciseRecord: Codable {
+            var id: UUID
+            var slug: String
+            var name: String
+            var aliases: [String]
+            var loadingModeRaw: String
+            var primaryMusclesRaw: [String]
+            var secondaryMusclesRaw: [String]
+            var equipmentRaw: [String]
+            var movementPatternRaw: String?
+            var instructions: String?
+            var createdAt: Date
+            var updatedAt: Date
         }
 
         struct ExerciseFlag: Codable {
@@ -157,6 +178,7 @@ enum DataArchive {
             FetchDescriptor<Further.Session>(sortBy: [SortDescriptor(\.startedAt)])
         )
         let flags = try context.fetch(FetchDescriptor<Further.ExerciseUserFlag>())
+        let customExercises = try context.fetch(FetchDescriptor<Further.CustomExercise>())
         let prefs = try context.fetch(FetchDescriptor<Further.UserPreferences>()).first
 
         let document = Document(
@@ -181,6 +203,22 @@ enum DataArchive {
                     exerciseId: $0.exerciseId,
                     isKey: $0.isKey,
                     updatedAt: $0.updatedAt
+                )
+            },
+            customExercises: customExercises.map { ce in
+                Document.CustomExerciseRecord(
+                    id: ce.id,
+                    slug: ce.slug,
+                    name: ce.name,
+                    aliases: ce.aliases,
+                    loadingModeRaw: ce.loadingModeRaw,
+                    primaryMusclesRaw: ce.primaryMuscles.map(\.rawValue),
+                    secondaryMusclesRaw: ce.secondaryMuscles.map(\.rawValue),
+                    equipmentRaw: ce.equipment.map(\.rawValue),
+                    movementPatternRaw: ce.movementPatternRaw,
+                    instructions: ce.instructions,
+                    createdAt: ce.createdAt,
+                    updatedAt: ce.updatedAt
                 )
             }
         )
@@ -218,7 +256,8 @@ enum DataArchive {
                         displayOrder: we.displayOrder,
                         targetSets: we.targetSets,
                         targetRepsMin: we.targetRepsMin,
-                        targetRepsMax: we.targetRepsMax
+                        targetRepsMax: we.targetRepsMax,
+                        targetDurationSeconds: we.targetDurationSeconds
                     )
                 }
         )
@@ -246,6 +285,7 @@ enum DataArchive {
                         targetSets: se.targetSets,
                         targetRepsMin: se.targetRepsMin,
                         targetRepsMax: se.targetRepsMax,
+                        targetDurationSeconds: se.targetDurationSeconds,
                         sets: (se.sets ?? [])
                             .sorted { $0.order < $1.order }
                             .map { s in
@@ -255,6 +295,7 @@ enum DataArchive {
                                     weightKg: s.weightKg,
                                     reps: s.reps,
                                     rir: s.rir,
+                                    durationSeconds: s.durationSeconds,
                                     completedAt: s.completedAt,
                                     skipped: s.skipped
                                 )
@@ -271,11 +312,12 @@ enum DataArchive {
         var workouts = 0
         var sessions = 0
         var exerciseFlags = 0
+        var customExercises = 0
         var skipped = 0
         var preferencesApplied = false
 
         var addedAnything: Bool {
-            programs + workouts + sessions + exerciseFlags > 0 || preferencesApplied
+            programs + workouts + sessions + exerciseFlags + customExercises > 0 || preferencesApplied
         }
 
         /// "2 programs, 6 workouts, 41 sessions" — omits zero counts so the
@@ -285,6 +327,9 @@ enum DataArchive {
             if programs > 0 { parts.append(programs == 1 ? "1 program" : "\(programs) programs") }
             if workouts > 0 { parts.append(workouts == 1 ? "1 workout" : "\(workouts) workouts") }
             if sessions > 0 { parts.append(sessions == 1 ? "1 session" : "\(sessions) sessions") }
+            if customExercises > 0 {
+                parts.append(customExercises == 1 ? "1 custom exercise" : "\(customExercises) custom exercises")
+            }
             if exerciseFlags > 0 {
                 parts.append(exerciseFlags == 1 ? "1 starred exercise" : "\(exerciseFlags) starred exercises")
             }
@@ -318,6 +363,9 @@ enum DataArchive {
         var knownWorkouts = Set(try context.fetch(FetchDescriptor<Further.Workout>()).map(\.id))
         let knownSessions = Set(try context.fetch(FetchDescriptor<Further.Session>()).map(\.id))
         let knownFlags = Set(try context.fetch(FetchDescriptor<Further.ExerciseUserFlag>()).map(\.exerciseId))
+        // Keyed by slug, not id: the slug is what every WorkoutExercise and
+        // SessionExercise points at, so a duplicate slug is the real hazard.
+        let knownCustomSlugs = Set(try context.fetch(FetchDescriptor<Further.CustomExercise>()).map(\.slug))
 
         for archived in document.programs {
             guard !knownPrograms.contains(archived.id) else {
@@ -362,6 +410,27 @@ enum DataArchive {
             }
             insert(archived, context: context)
             summary.sessions += 1
+        }
+
+        for archived in document.customExercises ?? [] {
+            guard !knownCustomSlugs.contains(archived.slug) else {
+                summary.skipped += 1
+                continue
+            }
+            let custom = Further.CustomExercise(name: archived.name)
+            custom.id = archived.id
+            custom.slug = archived.slug
+            custom.aliases = archived.aliases
+            custom.loadingModeRaw = archived.loadingModeRaw
+            custom.primaryMuscles = archived.primaryMusclesRaw.compactMap(MuscleGroup.init(rawValue:))
+            custom.secondaryMuscles = archived.secondaryMusclesRaw.compactMap(MuscleGroup.init(rawValue:))
+            custom.equipment = archived.equipmentRaw.compactMap(Equipment.init(rawValue:))
+            custom.movementPatternRaw = archived.movementPatternRaw
+            custom.instructions = archived.instructions
+            custom.createdAt = archived.createdAt
+            custom.updatedAt = archived.updatedAt
+            context.insert(custom)
+            summary.customExercises += 1
         }
 
         for archived in document.exerciseFlags {
@@ -420,7 +489,8 @@ enum DataArchive {
                 displayOrder: archivedExercise.displayOrder,
                 targetSets: archivedExercise.targetSets,
                 targetRepsMin: archivedExercise.targetRepsMin,
-                targetRepsMax: archivedExercise.targetRepsMax
+                targetRepsMax: archivedExercise.targetRepsMax,
+                targetDurationSeconds: archivedExercise.targetDurationSeconds
             )
             we.id = archivedExercise.id
             we.workout = workout
@@ -449,7 +519,8 @@ enum DataArchive {
                 displayOrder: archivedExercise.displayOrder,
                 targetSets: archivedExercise.targetSets,
                 targetRepsMin: archivedExercise.targetRepsMin,
-                targetRepsMax: archivedExercise.targetRepsMax
+                targetRepsMax: archivedExercise.targetRepsMax,
+                targetDurationSeconds: archivedExercise.targetDurationSeconds
             )
             se.id = archivedExercise.id
             se.session = session
@@ -460,7 +531,8 @@ enum DataArchive {
                     order: archivedSet.order,
                     weightKg: archivedSet.weightKg,
                     reps: archivedSet.reps,
-                    rir: archivedSet.rir
+                    rir: archivedSet.rir,
+                    durationSeconds: archivedSet.durationSeconds
                 )
                 set.id = archivedSet.id
                 set.completedAt = archivedSet.completedAt

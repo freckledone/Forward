@@ -26,6 +26,9 @@ enum SetFieldFocus: Hashable {
 struct WorkSetRow: View {
     @Bindable var workSet: WorkSet
     let displayUnit: DisplayUnit
+    /// How this exercise is measured. `.timed` swaps the reps field for a
+    /// duration field (D-072).
+    let loadingMode: LoadingMode
     let isCurrent: Bool
     let onCompleteToggled: () -> Void
     let onSkipToggled: () -> Void
@@ -40,6 +43,7 @@ struct WorkSetRow: View {
 
     @State private var weightText: String = ""
     @State private var repsText: String = ""
+    @State private var durationText: String = ""
 
     private var weightFocus: SetFieldFocus { .weight(workSet.id) }
     private var repsFocus: SetFieldFocus { .reps(workSet.id) }
@@ -82,6 +86,12 @@ struct WorkSetRow: View {
         .onAppear {
             weightText = Self.weightString(displayWeight)
             repsText = Self.repsString(workSet.reps)
+            durationText = Self.repsString(workSet.durationSeconds ?? 0)
+        }
+        .onChange(of: workSet.durationSeconds) { _, newValue in
+            if focusedField != repsFocus {
+                durationText = Self.repsString(newValue ?? 0)
+            }
         }
         .onChange(of: workSet.weightKg) { _, _ in
             if focusedField != weightFocus {
@@ -104,6 +114,7 @@ struct WorkSetRow: View {
             }
             if newFocus != repsFocus {
                 repsText = Self.repsString(workSet.reps)
+                durationText = Self.repsString(workSet.durationSeconds ?? 0)
             }
         }
     }
@@ -122,8 +133,8 @@ struct WorkSetRow: View {
                 HStack(spacing: 10) {
                     setNumber
                     weightField
-                    multiplySign
-                    repsField
+                    if !loadingMode.isTimed { multiplySign }
+                    measureField
                 }
                 HStack(spacing: 10) {
                     rirChip
@@ -138,10 +149,11 @@ struct WorkSetRow: View {
                 weightField
                     .frame(minWidth: 66, maxWidth: 92)
 
-                multiplySign
+                if !loadingMode.isTimed { multiplySign }
 
-                repsField
-                    .frame(minWidth: 40, maxWidth: 56)
+                measureField
+                    .frame(minWidth: loadingMode.isTimed ? 56 : 40,
+                           maxWidth: loadingMode.isTimed ? 76 : 56)
 
                 rirChip
 
@@ -187,6 +199,26 @@ struct WorkSetRow: View {
         case .kg: return "kg"
         case .lb: return "lb"
         }
+    }
+
+    /// Reps, or seconds held for a timed exercise.
+    @ViewBuilder
+    private var measureField: some View {
+        if loadingMode.isTimed { durationField } else { repsField }
+    }
+
+    private var durationField: some View {
+        TextField("secs", text: $durationText)
+            .keyboardType(.numberPad)
+            .multilineTextAlignment(.center)
+            .font(.system(.body, design: .rounded))
+            .monospacedDigit()
+            .lineLimit(1)
+            .focused($focusedField, equals: repsFocus)
+            .onChange(of: durationText) { _, newText in
+                commitDuration(from: newText)
+            }
+            .accessibilityLabel("Seconds held")
     }
 
     private var repsField: some View {
@@ -303,6 +335,15 @@ struct WorkSetRow: View {
         }
         guard let parsed = Double(sanitized) else { return }
         setDisplayWeight(parsed)
+    }
+
+    private func commitDuration(from text: String) {
+        if text.isEmpty {
+            workSet.durationSeconds = nil
+            return
+        }
+        guard let parsed = Int(text) else { return }
+        workSet.durationSeconds = max(0, parsed)
     }
 
     private func commitReps(from text: String) {

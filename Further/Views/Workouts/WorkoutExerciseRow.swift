@@ -20,7 +20,15 @@ struct WorkoutExerciseRow: View {
         catalog.exercise(withId: workoutExercise.exerciseId)?.name ?? "Unknown exercise"
     }
 
+    private var isTimed: Bool {
+        catalog.exercise(withId: workoutExercise.exerciseId)?.loadingMode.isTimed ?? false
+    }
+
     private var setsRepsLabel: String {
+        if isTimed {
+            let seconds = workoutExercise.targetDurationSeconds ?? 0
+            return "\(workoutExercise.targetSets) × \(seconds)s"
+        }
         let reps: String
         if workoutExercise.targetRepsMin == workoutExercise.targetRepsMax {
             reps = "\(workoutExercise.targetRepsMin)"
@@ -34,7 +42,7 @@ struct WorkoutExerciseRow: View {
         DisclosureGroup(isExpanded: $expanded) {
             VStack(alignment: .leading, spacing: 20) {
                 setsPicker
-                repsRangePicker
+                if isTimed { durationPicker } else { repsRangePicker }
             }
             .padding(.vertical, 12)
         } label: {
@@ -60,6 +68,21 @@ struct WorkoutExerciseRow: View {
                 value: workoutExercise.targetSets,
                 range: 1...20
             ) { workoutExercise.targetSets = $0 }
+        }
+    }
+
+    // MARK: - Hold duration
+
+    private var durationPicker: some View {
+        HStack(alignment: .center, spacing: 12) {
+            fieldLabel("Hold")
+            Spacer()
+            valueChip(
+                value: workoutExercise.targetDurationSeconds ?? 30,
+                range: 5...300,
+                step: 5,
+                suffix: "s"
+            ) { workoutExercise.targetDurationSeconds = $0 }
         }
     }
 
@@ -106,23 +129,25 @@ struct WorkoutExerciseRow: View {
     private func valueChip(
         value: Int,
         range: ClosedRange<Int>,
+        step: Int = 1,
+        suffix: String = "",
         onSelect: @escaping (Int) -> Void
     ) -> some View {
         Menu {
-            ForEach(range, id: \.self) { n in
+            ForEach(Array(stride(from: range.lowerBound, through: range.upperBound, by: step)), id: \.self) { n in
                 Button {
                     onSelect(n)
                 } label: {
                     if n == value {
-                        Label("\(n)", systemImage: "checkmark")
+                        Label("\(n)\(suffix)", systemImage: "checkmark")
                     } else {
-                        Text("\(n)")
+                        Text("\(n)\(suffix)")
                     }
                 }
             }
         } label: {
             HStack(spacing: 4) {
-                Text("\(value)")
+                Text("\(value)\(suffix)")
                     .font(.system(.title3, design: .rounded, weight: .semibold))
                     .monospacedDigit()
                     .lineLimit(1)

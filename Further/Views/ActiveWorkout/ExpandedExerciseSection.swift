@@ -215,6 +215,7 @@ struct ExpandedExerciseSection: View {
                 WorkSetRow(
                     workSet: s,
                     displayUnit: displayUnit,
+                    loadingMode: exercise?.loadingMode ?? .weighted,
                     isCurrent: s.order == currentSetOrder && s.completedAt == nil,
                     onCompleteToggled: { advanceFocus(after: s) },
                     onSkipToggled: { onSetSkipToggled(s) },

@@ -259,15 +259,31 @@ struct SessionDetailView: View {
 
             if logged {
                 HStack(spacing: 5) {
-                    Text(weightLabel(for: set))
-                        .font(.system(.body, design: .rounded, weight: .medium))
-                        .monospacedDigit()
-                    Text("×")
-                        .font(.footnote)
-                        .foregroundStyle(.tertiary)
-                    Text("\(set.reps)")
-                        .font(.system(.body, design: .rounded, weight: .medium))
-                        .monospacedDigit()
+                    if let seconds = set.durationSeconds {
+                        // A timed set has no rep count; show the hold, and the
+                        // weight only when something was actually added.
+                        if set.weightKg > 0 {
+                            Text(weightLabel(for: set))
+                                .font(.system(.body, design: .rounded, weight: .medium))
+                                .monospacedDigit()
+                            Text("+")
+                                .font(.footnote)
+                                .foregroundStyle(.tertiary)
+                        }
+                        Text(Self.durationLabel(seconds))
+                            .font(.system(.body, design: .rounded, weight: .medium))
+                            .monospacedDigit()
+                    } else {
+                        Text(weightLabel(for: set))
+                            .font(.system(.body, design: .rounded, weight: .medium))
+                            .monospacedDigit()
+                        Text("×")
+                            .font(.footnote)
+                            .foregroundStyle(.tertiary)
+                        Text("\(set.reps)")
+                            .font(.system(.body, design: .rounded, weight: .medium))
+                            .monospacedDigit()
+                    }
                 }
                 .foregroundStyle(.primary)
             } else {
@@ -291,6 +307,12 @@ struct SessionDetailView: View {
     }
 
     // MARK: - Formatting
+
+    /// "45s" under a minute, "1:30" above it.
+    static func durationLabel(_ seconds: Int) -> String {
+        if seconds < 60 { return "\(seconds)s" }
+        return String(format: "%d:%02d", seconds / 60, seconds % 60)
+    }
 
     private func weightLabel(for set: WorkSet) -> String {
         if set.weightKg <= 0 { return "BW" }

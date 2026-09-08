@@ -22,6 +22,8 @@ final class SessionExercise {
     var targetSets: Int = 0
     var targetRepsMin: Int = 0
     var targetRepsMax: Int = 0
+    /// Snapshot of the target hold for `.timed` exercises (D-072).
+    var targetDurationSeconds: Int?
 
     var session: Session?
 
@@ -34,7 +36,8 @@ final class SessionExercise {
         displayOrder: Int = 0,
         targetSets: Int = 0,
         targetRepsMin: Int = 0,
-        targetRepsMax: Int = 0
+        targetRepsMax: Int = 0,
+        targetDurationSeconds: Int? = nil
     ) {
         self.id = UUID()
         self.exerciseId = exerciseId
@@ -43,6 +46,7 @@ final class SessionExercise {
         self.targetSets = targetSets
         self.targetRepsMin = targetRepsMin
         self.targetRepsMax = targetRepsMax
+        self.targetDurationSeconds = targetDurationSeconds
         self.sets = []
     }
 }

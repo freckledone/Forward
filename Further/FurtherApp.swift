@@ -16,7 +16,7 @@ struct FurtherApp: App {
     let healthWriter: HealthKitWorkoutWriter
 
     init() {
-        let schema = Schema(versionedSchema: SchemaV1.self)
+        let schema = Schema(versionedSchema: SchemaV2.self)
 
         // Whether to sync is decided here, once, because a ModelContainer's
         // CloudKit backing is fixed at construction — the Settings toggle
@@ -51,7 +51,11 @@ struct FurtherApp: App {
                     schema: schema,
                     isStoredInMemoryOnly: false
                 )
-                modelContainer = try ModelContainer(for: schema, configurations: [localConfig])
+                modelContainer = try ModelContainer(
+                    for: schema,
+                    migrationPlan: FurtherMigrationPlan.self,
+                    configurations: [localConfig]
+                )
                 syncStatus = SyncStatus(
                     isCloudBacked: false,
                     isDisabledByPreference: !wantsSync,
@@ -72,7 +76,12 @@ struct FurtherApp: App {
                 .environment(exerciseCatalog)
                 .environment(syncStatus)
                 .environment(healthWriter)
-                .task { await syncStatus.refresh() }
+                .task {
+                    // Custom exercises live in the store, so they can only be
+                    // folded in once the container exists (D-073).
+                    exerciseCatalog.refreshCustom(from: modelContainer.mainContext)
+                    await syncStatus.refresh()
+                }
         }
         .modelContainer(modelContainer)
     }

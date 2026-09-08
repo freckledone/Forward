@@ -11,9 +11,12 @@ struct ExercisePicker: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(ExerciseCatalog.self) private var catalog
 
+    @Environment(\.modelContext) private var modelContext
+
     @State private var query: String = ""
     @State private var muscleFilter: MuscleGroup? = nil
     @State private var equipmentFilter: Equipment? = nil
+    @State private var creatingCustom = false
 
     private var results: [Exercise] {
         catalog.exercises(
@@ -48,8 +51,24 @@ struct ExercisePicker: View {
             .navigationTitle("Add Exercise")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        creatingCustom = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                    .accessibilityLabel("Create custom exercise")
+                }
+            }
+            .sheet(isPresented: $creatingCustom) {
+                CustomExerciseEditor { created in
+                    // Straight into the workout — creating one here always
+                    // means you wanted to add it.
+                    onPick(created.asExercise)
+                    dismiss()
                 }
             }
         }
@@ -62,6 +81,14 @@ struct ExercisePicker: View {
                 .font(.body)
                 .foregroundStyle(.primary)
             HStack(spacing: 6) {
+                if CustomExercise.isCustom(exercise.id) {
+                    Text("Yours")
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(Color.accentColor)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background { Capsule().fill(Color.accentColor.opacity(0.14)) }
+                }
                 if let primary = exercise.primaryMuscles.first {
                     Text(primary.displayName)
                 }
@@ -80,7 +107,14 @@ struct ExercisePicker: View {
         ContentUnavailableView {
             Label("No matches", systemImage: "magnifyingglass")
         } description: {
-            Text("Try clearing filters or the search text.")
+            Text("Try clearing the filters or the search text — or add this exercise yourself.")
+        } actions: {
+            Button {
+                creatingCustom = true
+            } label: {
+                Text("Create Exercise")
+            }
+            .buttonStyle(.borderedProminent)
         }
     }
 }

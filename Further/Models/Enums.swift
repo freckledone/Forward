@@ -6,6 +6,22 @@ import Foundation
 enum LoadingMode: String, Codable, CaseIterable, Hashable {
     case weighted
     case bodyweight
+    /// Held for time rather than counted in reps — planks, hangs, carries.
+    /// A timed set records a duration; `weightKg` still means *added* weight.
+    case timed
+}
+
+extension LoadingMode {
+    var displayName: String {
+        switch self {
+        case .weighted: return "Weighted"
+        case .bodyweight: return "Bodyweight"
+        case .timed: return "Timed"
+        }
+    }
+
+    /// True when a set is measured in seconds instead of reps.
+    var isTimed: Bool { self == .timed }
 }
 
 enum MuscleGroup: String, Codable, CaseIterable, Hashable {

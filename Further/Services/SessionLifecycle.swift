@@ -46,7 +46,8 @@ enum SessionLifecycle {
                 displayOrder: we.displayOrder,
                 targetSets: we.targetSets,
                 targetRepsMin: we.targetRepsMin,
-                targetRepsMax: we.targetRepsMax
+                targetRepsMax: we.targetRepsMax,
+                targetDurationSeconds: we.targetDurationSeconds
             )
             se.session = session
             context.insert(se)
@@ -63,7 +64,8 @@ enum SessionLifecycle {
                     order: setIndex,
                     weightKg: suggestion?.weightKg ?? 0,
                     reps: suggestion?.reps ?? we.targetRepsMin,
-                    rir: nil
+                    rir: nil,
+                    durationSeconds: we.targetDurationSeconds
                 )
                 set.sessionExercise = se
                 context.insert(set)
@@ -110,6 +112,9 @@ enum SessionLifecycle {
             set.weightKg = suggestion?.weightKg ?? 0
             set.reps = suggestion?.reps ?? sessionExercise.targetRepsMin
             set.rir = nil
+            set.durationSeconds = exercise.loadingMode.isTimed
+                ? sessionExercise.targetDurationSeconds
+                : nil
             set.completedAt = nil
             set.skipped = false
         }
