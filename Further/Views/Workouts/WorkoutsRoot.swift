@@ -144,8 +144,8 @@ struct WorkoutsRoot: View {
                 Section {
                     let workouts = (program.workouts ?? []).sorted { $0.displayOrder < $1.displayOrder }
                     ForEach(workouts) { workout in
-                        // Tapping starts the workout (D-075). Editing moves to
-                        // a swipe, and destructive actions to a long press,
+                        // The card is inert; only its Start button begins a
+                        // workout (D-075). Edit and Delete live on long press,
                         // where they take a deliberate gesture to reach.
                         WorkoutCard(workout: workout) {
                             startWorkout(from: workout)
@@ -153,14 +153,9 @@ struct WorkoutsRoot: View {
                         .listRowInsets(EdgeInsets(top: 6, leading: 20, bottom: 6, trailing: 20))
                         .listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
-                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                            Button {
-                                editingWorkout = workout
-                            } label: {
-                                Label("Edit", systemImage: "pencil")
-                            }
-                            .tint(Color.accentColor)
-                        }
+                        // Long press only. A swipe action and a context menu
+                        // holding the same Edit is two hidden gestures for one
+                        // command, and the menu already carries Delete.
                         .contextMenu {
                             Button {
                                 editingWorkout = workout
