@@ -5,7 +5,7 @@ import Observation
 /// Writes completed sessions to Apple Health as `HKWorkout` samples (D-028).
 ///
 /// Scope is deliberately minimal: activity type, start, end, and source. No
-/// calorie estimate — Forward has no heart-rate or motion data, so any number
+/// calorie estimate — Further has no heart-rate or motion data, so any number
 /// it produced would be a guess wearing the costume of a measurement. No
 /// per-set samples, and **no reads at all**, which keeps this to a single
 /// write-only permission scope.
@@ -28,7 +28,7 @@ final class HealthKitWorkoutWriter {
             case .unavailable:
                 return "Apple Health isn't available on this device."
             case .notAuthorized:
-                return "Forward isn't allowed to add workouts to Apple Health. You can change this in Settings › Health › Data Access & Devices."
+                return "Further isn't allowed to add workouts to Apple Health. You can change this in Settings › Health › Data Access & Devices."
             case .sessionNotFinished:
                 return "That workout hasn't finished yet."
             case .emptyDuration:
@@ -41,7 +41,7 @@ final class HealthKitWorkoutWriter {
 
     private let store = HKHealthStore()
 
-    /// The only type Forward ever touches.
+    /// The only type Further ever touches.
     private var workoutType: HKObjectType { HKObjectType.workoutType() }
 
     var isAvailable: Bool { HKHealthStore.isHealthDataAvailable() }
@@ -107,7 +107,7 @@ final class HealthKitWorkoutWriter {
 
     // MARK: - Delete
 
-    /// Removes a previously written workout, so deleting a session in Forward
+    /// Removes a previously written workout, so deleting a session in Further
     /// doesn't leave an orphan in Health.
     ///
     /// Silently succeeds when the sample is already gone — the user may have

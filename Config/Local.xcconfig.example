@@ -1,6 +1,6 @@
 // Copy this file to Config/Local.xcconfig and fill in your own values.
-// Local.xcconfig is git-ignored and overrides Config/Forward.xcconfig.
+// Local.xcconfig is git-ignored and overrides Config/Further.xcconfig.
 
-FORWARD_TEAM_ID = YOURTEAMID
-FORWARD_BUNDLE_ID = com.yourname.Forward
-FORWARD_ICLOUD_CONTAINER = iCloud.com.yourname.Forward
+FURTHER_TEAM_ID = YOURTEAMID
+FURTHER_BUNDLE_ID = com.yourname.Further
+FURTHER_ICLOUD_CONTAINER = iCloud.com.yourname.Further

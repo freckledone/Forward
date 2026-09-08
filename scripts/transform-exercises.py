@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Transform Free Exercise DB (Unlicense) into Forward's schema.
+Transform Free Exercise DB (Unlicense) into Further's schema.
 
 Source: https://github.com/yuhonas/free-exercise-db
 Spec: docs/06-exercise-database-specification.md
 
 Usage:
-  python3 scripts/transform-exercises.py > Forward/Resources/exercises.json
+  python3 scripts/transform-exercises.py > Further/Resources/exercises.json
 
 Deterministic; running twice on the same source produces identical output.
 """

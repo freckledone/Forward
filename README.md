@@ -1,9 +1,9 @@
-# Forward
+# Further
 
 An iOS strength-training tracker. Log your sets, see whether you're progressing
 on the lifts you care about, and nothing else.
 
-Forward is built for one kind of person doing one thing well:
+Further is built for one kind of person doing one thing well:
 
 > Log strength workouts and see progress on the lifts they care about, with as
 > little friction as possible.
@@ -43,9 +43,9 @@ The full list lives in [`docs/00-constitution.md`](docs/00-constitution.md).
 Requires Xcode 16+ and iOS 17+.
 
 ```sh
-git clone git@github.com:freckledone/Forward.git
-cd Forward
-open Forward.xcodeproj
+git clone git@github.com:freckledone/Further.git
+cd Further
+open Further.xcodeproj
 ```
 
 It builds and runs in the Simulator immediately, with placeholder identifiers.
@@ -60,9 +60,9 @@ cp Config/Local.xcconfig.example Config/Local.xcconfig
 Then edit that file:
 
 ```
-FORWARD_TEAM_ID          = YOURTEAMID
-FORWARD_BUNDLE_ID        = com.yourname.Forward
-FORWARD_ICLOUD_CONTAINER = iCloud.com.yourname.Forward
+FURTHER_TEAM_ID          = YOURTEAMID
+FURTHER_BUNDLE_ID        = com.yourname.Further
+FURTHER_ICLOUD_CONTAINER = iCloud.com.yourname.Further
 ```
 
 `Config/Local.xcconfig` is git-ignored. Those three values feed the project's
@@ -70,7 +70,7 @@ signing settings, the entitlements file, and the container identifier the app
 reads at runtime — so this is the only file you need to touch.
 
 In Xcode, provision the CloudKit container under **Signing & Capabilities →
-iCloud** so it matches `FORWARD_ICLOUD_CONTAINER`. Without it the app still
+iCloud** so it matches `FURTHER_ICLOUD_CONTAINER`. Without it the app still
 runs; it falls back to a local-only store and says so in Settings.
 
 ## Architecture
@@ -81,7 +81,7 @@ optional relationships with explicit inverses, no unique attributes — so sync
 is a configuration change rather than a migration.
 
 ```
-Forward/
+Further/
   Models/      SwiftData models + the V1 schema
   Services/    Suggestions, progress math, backup, sync + Health status
   Views/       Workouts, Active Workout, History, Progress, Settings
@@ -103,7 +103,7 @@ is shaped this way, read that file rather than guessing from the code.
 ## Testing
 
 ```sh
-xcodebuild test -project Forward.xcodeproj -scheme Forward \
+xcodebuild test -project Further.xcodeproj -scheme Further \
   -destination 'platform=iOS Simulator,name=iPhone 17'
 ```
 
@@ -116,7 +116,7 @@ malformed input.
 The bundled exercise catalog is derived from
 [Free Exercise DB](https://github.com/yuhonas/free-exercise-db), released into
 the public domain under the [Unlicense](https://unlicense.org). Entries were
-transformed into Forward's schema by
+transformed into Further's schema by
 [`scripts/transform-exercises.py`](scripts/transform-exercises.py), then
 hand-corrected for naming, aliases, and muscle assignments. See
 [`docs/06-exercise-database-specification.md`](docs/06-exercise-database-specification.md).

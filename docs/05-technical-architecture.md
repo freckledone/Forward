@@ -1,6 +1,6 @@
 # 05 — Technical Architecture
 
-Source of truth for the technical design of Forward V1. Every claim below is either backed by a decision entry (D-XXX in `decision-log.md`) or is a downstream consequence of one. Do not change this document without a corresponding decision-log entry.
+Source of truth for the technical design of Further V1. Every claim below is either backed by a decision entry (D-XXX in `decision-log.md`) or is a downstream consequence of one. Do not change this document without a corresponding decision-log entry.
 
 ---
 
@@ -190,7 +190,7 @@ UserPreferences (singleton, queried lazily)
 ### 4.1 SwiftData + CloudKit setup
 
 - One `ModelContainer` for the whole app, configured with CloudKit sync enabled.
-- CloudKit container identifier: `iCloud.<bundle-id>` (to be set on `Forward.entitlements` when we start coding). The scaffold's identifier array is currently empty.
+- CloudKit container identifier: `iCloud.<bundle-id>` (to be set on `Further.entitlements` when we start coding). The scaffold's identifier array is currently empty.
 - Private database only. No shared or public zones.
 
 ### 4.2 CloudKit constraints (already reflected in the model above)
@@ -281,8 +281,8 @@ Per D-028:
 - **Workouts only.** No per-set `HKSample` records.
 - **No calorie estimation.** Never write a fake number.
 - **Permission timing:** first End Workout, not first launch.
-- **Denial handling:** session still saves locally. User can grant later via system Settings → Privacy → Health → Forward.
-- **Deletion sync:** deleting a session in Forward attempts to delete the corresponding `HKWorkout` if `healthKitWorkoutUUID` is set. Best-effort; if HealthKit deletion fails, the local session deletion still succeeds.
+- **Denial handling:** session still saves locally. User can grant later via system Settings → Privacy → Health → Further.
+- **Deletion sync:** deleting a session in Further attempts to delete the corresponding `HKWorkout` if `healthKitWorkoutUUID` is set. Best-effort; if HealthKit deletion fails, the local session deletion still succeeds.
 
 `HealthKitWorkoutWriter` (or similar) module encapsulates all HealthKit code so the rest of the app has no HealthKit imports.
 

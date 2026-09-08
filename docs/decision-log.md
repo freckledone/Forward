@@ -1,4 +1,4 @@
-# Decision Log — Forward
+# Decision Log — Further
 
 Every important product, UX, or architectural decision goes here. Format:
 
@@ -258,7 +258,7 @@ Original:
 - **Impact:** All future implementation work references this model. Changes require a new decision entry. Closes Q-007.
 
 ### D-035 — Exercise DB provenance: Free Exercise DB (Unlicense) → transformed & filtered
-- **Decision:** Seed the bundled exercise database from the Free Exercise DB (github.com/yuhonas/free-exercise-db) as source data. That project is released under **The Unlicense** (public-domain dedication) — verified via GitHub API 2026-09-06 — permitting unrestricted use, modification, and bundling. A transformation script filters their 876 exercises to the strength / powerlifting / olympic-weightlifting / strongman categories, maps their fields to Forward's schema, applies the taxonomy collapse rules (D-036), and produces `Forward/Resources/exercises.json`. Bundled images from the source are NOT used in V1 (D-011 context; exercise media is parking-lot).
+- **Decision:** Seed the bundled exercise database from the Free Exercise DB (github.com/yuhonas/free-exercise-db) as source data. That project is released under **The Unlicense** (public-domain dedication) — verified via GitHub API 2026-09-06 — permitting unrestricted use, modification, and bundling. A transformation script filters their 876 exercises to the strength / powerlifting / olympic-weightlifting / strongman categories, maps their fields to Further's schema, applies the taxonomy collapse rules (D-036), and produces `Further/Resources/exercises.json`. Bundled images from the source are NOT used in V1 (D-011 context; exercise media is parking-lot).
 - **Why:** The Unlicense is the most permissive license possible; no risk of contamination for any OSS license we later choose (Q-009). Their taxonomy is close enough to ours that mechanical transformation works. Their coverage (876 entries) gives us plenty of material to filter down to the user's actual program.
 - **Alternatives:** Manually curate seed from scratch; import from wger (GPL); import from proprietary sources.
 - **Why not:** Manual is slower for zero material gain; wger contaminates the license; proprietary sources are legally risky.
@@ -279,27 +279,28 @@ Original:
 - **Alternatives:** (A) Full replacement with 3-value taxonomy (plateLoaded/machineLoaded/bodyweight); (C) two-dimensional Equipment + orthogonal LoadingType.
 - **Why not:** (A) drops barbell/dumbbell/cable distinctions that are useful for filter and browse; (C) doubles enum surface for one exercise category's benefit.
 - **Date:** 2026-09-07
-- **Impact:** Equipment enum in `Forward/Models/Enums.swift` has 9 cases. `scripts/coverage-pass.py` `EQUIPMENT_FIXES` updated to override three exercises (`barbell-hip-thrust`, `leg-press`, `seated-calf-raise`) to include `plateLoadedMachine`. `Forward/Resources/exercises.json` regenerated. `docs/06-exercise-database-specification.md` §2.2 updated. Source `transform-exercises.py` unchanged (Free Exercise DB doesn't distinguish; defaults source `machine` → our `machine`).
+- **Impact:** Equipment enum in `Further/Models/Enums.swift` has 9 cases. `scripts/coverage-pass.py` `EQUIPMENT_FIXES` updated to override three exercises (`barbell-hip-thrust`, `leg-press`, `seated-calf-raise`) to include `plateLoadedMachine`. `Further/Resources/exercises.json` regenerated. `docs/06-exercise-database-specification.md` §2.2 updated. Source `transform-exercises.py` unchanged (Free Exercise DB doesn't distinguish; defaults source `machine` → our `machine`).
 
 ### D-045 — Open-source license: MIT
-- **Decision:** Forward is released under the MIT License. `LICENSE` file at repo root; copyright holder "Yuri Gurgenidze"; year 2026.
+- **Decision:** Further is released under the MIT License. `LICENSE` file at repo root; copyright holder "Yuri Gurgenidze"; year 2026.
 - **Why:** Maximum permissiveness. Anyone can use, modify, redistribute (including commercially) as long as the copyright notice is preserved. Doesn't force downstream licensing choices. Compatible with the Unlicense source of the bundled exercise data (D-035). Simplest possible license to explain.
 - **Alternatives:** Apache-2.0 (adds explicit patent grant, more verbose), GPL (copyleft — forces derivatives to be GPL), keep private (no OSS release).
 - **Why not:** Apache-2.0's patent grant is nice-to-have but not needed for a personal-use app with no proprietary tech; GPL contaminates any downstream user; private forfeits the open-source stance from the brief.
 - **Date:** 2026-09-07
 - **Impact:** `LICENSE` file created. README (whenever it exists) should mention MIT. Third-party contributions, if we ever accept any, license their contribution under MIT by default. Closes Q-009.
 
-### D-044 — Product name: Forward
-- **Decision:** The product ships as **Forward**. The name is the working name promoted to final. No trademark search / App Store availability check performed yet — deferred until submission because the app may never be submitted (personal use is fine indefinitely).
+### D-044 — *(superseded by D-070, 2026-09-09)*
+### D-044 — Product name: Further
+- **Decision:** The product ships as **Further**. The name is the working name promoted to final. No trademark search / App Store availability check performed yet — deferred until submission because the app may never be submitted (personal use is fine indefinitely).
 - **Why:** User is satisfied with the name; the Xcode scaffold, folder, and all docs already use it; delaying further has no upside.
 - **Alternatives:** Rename to something from the brief's conceptual territory (Momentum, Ascent, Rep, Practice, etc.); leave as "working name" indefinitely.
 - **Why not:** Renaming late is a real cost (Xcode target, bundle ID, CloudKit container, entitlements); leaving as "working" carries the option cost of never committing.
 - **Date:** 2026-09-07
-- **Impact:** All references to Forward are now canonical. Pre-App-Store checklist adds: trademark search + App Store name availability check. If either fails at submission time, we revisit with the option value of already having built the product. Closes Q-001.
+- **Impact:** All references to Further are now canonical. Pre-App-Store checklist adds: trademark search + App Store name availability check. If either fails at submission time, we revisit with the option value of already having built the product. Closes Q-001.
 
 ### D-043 — *(accent colour superseded by D-065, 2026-09-07)*
 ### D-043 — Design System: "Apple language, spoken confidently" (Fitness/Weather reference, not Settings)
-- **Decision:** Forward's visual language uses Apple's system components, Dynamic Type, semantic colors, SF Symbols, and standard interaction patterns — but with the visual richness of Fitness / Weather, NOT the utilitarianism of Settings / Notes / Reminders. This means: purposeful gradients (subtle, meaningful), hero rounded-numeric displays for headline stats, muscle-group-tinted card backgrounds, subtle shadows, richer motion, and generous use of `Material` on ambient surfaces. Full spec in `docs/04-design-system.md`.
+- **Decision:** Further's visual language uses Apple's system components, Dynamic Type, semantic colors, SF Symbols, and standard interaction patterns — but with the visual richness of Fitness / Weather, NOT the utilitarianism of Settings / Notes / Reminders. This means: purposeful gradients (subtle, meaningful), hero rounded-numeric displays for headline stats, muscle-group-tinted card backgrounds, subtle shadows, richer motion, and generous use of `Material` on ambient surfaces. Full spec in `docs/04-design-system.md`.
 - **Why:** User pushed back on 2026-09-07 that the initial design-system draft leaned too utilitarian ("just because it's Apple-first doesn't mean it should look like Settings"). Fitness and Weather demonstrate that Apple-native ≠ plain; both use gradients, hero numbers, and tinted surfaces while remaining unmistakably iOS.
 - **Alternatives:** Strict Settings/Notes-like utilitarianism (initial draft, superseded); startup-SaaS aesthetics; heavy custom UI.
 - **Why not:** Utilitarian is boring for a personal-use daily app; SaaS aesthetics violate Constitution §4; heavy custom UI violates Apple-first.
@@ -380,7 +381,7 @@ Original:
 - **Impact:** The bundled exercise catalog is deliberately absent from the archive — it ships with the app and is read-only (D-031), and records reference exercises by stable slug, so archives survive catalog updates. `Workout.program` is optional for CloudKit (D-030), so orphaned workouts export under a separate `unassignedWorkouts` key rather than being silently dropped. Imported preferences apply **only** when the store has none, so merging into a configured app can't flip the unit setting. Dates are ISO-8601 and keys are sorted, so two exports of unchanged data are byte-identical and diffable. A file with a `formatVersion` above the reader's is refused rather than partially parsed. 13 tests cover round-trip fidelity, id preservation, idempotency, non-overwrite, orphan handling, and three classes of bad input.
 
 ### D-061 — CloudKit sync on, with a local fallback and an honest status row
-- **Decision:** `ForwardApp` builds its `ModelContainer` with `cloudKitDatabase: .private(SyncStatus.containerIdentifier)`, matching the entitlement. If that container can't be opened the app falls back to a local-only store for that launch rather than crashing. A new `SyncStatus` observable reports state to a Settings row, combining three signals: whether the container is CloudKit-backed, the `CKAccountStatus`, and completed `NSPersistentCloudKitContainer` mirroring events.
+- **Decision:** `FurtherApp` builds its `ModelContainer` with `cloudKitDatabase: .private(SyncStatus.containerIdentifier)`, matching the entitlement. If that container can't be opened the app falls back to a local-only store for that launch rather than crashing. A new `SyncStatus` observable reports state to a Settings row, combining three signals: whether the container is CloudKit-backed, the `CKAccountStatus`, and completed `NSPersistentCloudKitContainer` mirroring events.
 - **Why:** Sync was the last piece of D-030 left unwired, and the paid membership is now in place. The fallback exists because an unprovisioned container or a revoked entitlement should cost sync, not the user's access to their own training history — `fatalError` on launch is the worst possible response to a cloud problem.
 - **Alternatives:** `cloudKitDatabase: .automatic`; crash on container failure (the prior behavior); report status from `CKAccountStatus` alone; no status surface at all.
 - **Why not:** `.automatic` silently picks the first entitlement container, so a config drift between entitlement and code would go unnoticed; naming it explicitly fails loudly instead. `CKAccountStatus` alone is not sufficient — see Impact.
@@ -390,7 +391,7 @@ Original:
   - **Pre-ship requirement:** the CloudKit schema is pushed to the *Development* environment automatically on first Debug run. It must be promoted to *Production* in the CloudKit Dashboard before TestFlight or App Store release, or synced installs will fail against an empty production schema.
 
 ### D-062 — Sync toggle lives in UserDefaults and applies on next launch
-- **Decision:** Settings gains an "iCloud Sync" toggle backed by `UserDefaults` (`SyncStatus.syncEnabledDefaultsKey`, defaulting to on). `ForwardApp` reads it once at launch to decide whether to build a CloudKit-backed or local-only container. Because a `ModelContainer`'s CloudKit backing is fixed at construction, the change takes effect on the **next launch**, and Settings says so explicitly whenever the toggle disagrees with what's actually running.
+- **Decision:** Settings gains an "iCloud Sync" toggle backed by `UserDefaults` (`SyncStatus.syncEnabledDefaultsKey`, defaulting to on). `FurtherApp` reads it once at launch to decide whether to build a CloudKit-backed or local-only container. Because a `ModelContainer`'s CloudKit backing is fixed at construction, the change takes effect on the **next launch**, and Settings says so explicitly whenever the toggle disagrees with what's actually running.
 - **Why:** Sync should be the user's choice, not a build-time constant. The restart notice exists because the alternative — a switch that flips but changes nothing until an unannounced future launch — is a control that lies about the state of the system.
 - **Alternatives:** Store the flag in `UserPreferences` (the SwiftData model); rebuild the `ModelContainer` live on toggle; force-quit the app on toggle; hide the toggle entirely.
 - **Why not:** `UserPreferences` is the wrong home twice over — it lives in the store being synced, so a "sync off" flag there would propagate the shutoff to every other device (the opposite of a per-device setting), and it isn't readable before the container it configures exists. SwiftData offers no supported way to swap a live container's backing. Force-quitting an app programmatically is an App Store rejection and looks like a crash.
@@ -409,14 +410,14 @@ Original:
   - No unit tests: `HKHealthStore` needs a real Health database and a permission grant, so any test would assert against a stub rather than the integration. Verification is the signed-entitlement check above plus on-device use.
 
 ### D-064 — Build identity lives in a git-ignored xcconfig, not in the project file
-- **Decision:** `DEVELOPMENT_TEAM`, `PRODUCT_BUNDLE_IDENTIFIER`, and the CloudKit container identifier are removed from `project.pbxproj`, the entitlements file, and Swift source. They now resolve from three variables in `Config/Forward.xcconfig`, which ships placeholder values and optionally includes a git-ignored `Config/Local.xcconfig` holding the real ones. `SyncStatus.containerIdentifier` reads the value from Info.plist instead of hardcoding it. Repo also gains a README and a NOTICE.
+- **Decision:** `DEVELOPMENT_TEAM`, `PRODUCT_BUNDLE_IDENTIFIER`, and the CloudKit container identifier are removed from `project.pbxproj`, the entitlements file, and Swift source. They now resolve from three variables in `Config/Further.xcconfig`, which ships placeholder values and optionally includes a git-ignored `Config/Local.xcconfig` holding the real ones. `SyncStatus.containerIdentifier` reads the value from Info.plist instead of hardcoding it. Repo also gains a README and a NOTICE.
 - **Why:** Preparing the project to be open-sourced. The identifiers aren't secrets — team IDs appear in every signed app — but they're personal, and a clone shouldn't carry them. This also fixes a real fork problem: previously a cloner hit signing and CloudKit errors with no explanation, and the container id was duplicated across three files that could silently drift.
 - **Alternatives:** Leave the identifiers in and document them in the README; blank them in `pbxproj` and have each developer re-enter them in Xcode; `git update-index --skip-worktree` on the project file.
 - **Why not:** Documenting doesn't remove them. Re-entering in Xcode writes straight back into the tracked `pbxproj`, so the next commit re-adds them — the exact loop xcconfig exists to break. `skip-worktree` is a local flag that silently breaks for anyone who doesn't know it's set.
 - **Date:** 2026-09-07
 - **Impact:** Verified in both directions: a clean checkout builds for the Simulator on placeholders, and a device-signed build resolves the real bundle id and container from `Local.xcconfig` into `Info.plist` and the signed entitlements.
   - Two mistakes worth recording, both caught by building rather than reading. **`$(VAR)` must be quoted in `pbxproj`** — the old-style plist parser treats bare `$` and parentheses as a syntax error, and Xcode then reports only "Unable to read project", which points nowhere near the cause. **An `#include?` must come *after* the defaults it overrides**, since the last assignment wins in an xcconfig; placed first, the placeholders silently overwrote the local values and signing failed with "requires a development team" despite the team being set.
-  - The xcconfig is attached to the two **project-level** build configurations, not the app target's, so the test targets inherit the same variables. Their bundle ids derive as `$(FORWARD_BUNDLE_ID)Tests` / `UITests`.
+  - The xcconfig is attached to the two **project-level** build configurations, not the app target's, so the test targets inherit the same variables. Their bundle ids derive as `$(FURTHER_BUNDLE_ID)Tests` / `UITests`.
   - `docs/` stays in the repository. It contains design documents, not development-session transcripts; the decision log is the most useful artifact here for anyone trying to understand the codebase.
 
 ### D-065 — Accent colour is sampled from the app icon · Supersedes the accent clause of D-043
@@ -464,6 +465,16 @@ Original:
 - **Impact:** Catalog tests assert on the real bundled file, so they fail if a future edit introduces a duplicate id, a blank name, an entry with no primary muscle, an uppercase alias, or a muscle filter with no results. Lifecycle tests cover target snapshotting, suggestion seeding, the `max(targetSets, 1)` floor, swap reset and re-seeding, cascade on discard, and history exclusion of the in-flight session.
   - One test was written wrong and corrected rather than the code: it asserted that a name-prefix match always outranks a mid-name match. Per docs/06 §6 an alias is worth +3 each, so "Barbell Bench Press" (three alias hits, score 15) correctly beats "Bench Dips" (prefix, score 11) — which is the right answer for someone typing "bench". The test now checks prefix ordering only among entries with no alias hits, plus a second test asserting the alias boost surfaces the canonical lift.
 
+### D-070 — The app is renamed Further · Supersedes D-044
+- **Decision:** The app, its Xcode project, all three targets, the scheme, the source folder and every identifier are renamed from Forward to Further. **The bundle identifier and CloudKit container are deliberately left unchanged.**
+- **Why:** Author's decision on the name. The rename was applied by replacing capital-`Forward` only, which protects the 276 lowercase uses of "forward" in `exercises.json` (exercise instructions — "lean forward", "kick forward") and the `forward.end` SF Symbol in `WorkSetRow`. `exercises.json` was skipped outright: it holds zero capital-F occurrences, so rewriting a 644KB data file would have been all risk and no change.
+- **Alternatives:** Also change the bundle id and CloudKit container to match; rename the display name only and leave the code as Forward.
+- **Why not:** Changing the bundle id makes the build a *different app* on the device — it cannot see the existing local store, so the author's logged workouts would appear to vanish — and a new CloudKit container orphans whatever has already synced. That is a data migration, not a rename, and it needs an export/import round trip (D-060) rather than being smuggled into a find-and-replace. Renaming only the display name leaves the codebase saying Forward forever.
+- **Date:** 2026-09-09
+- **Impact:** Verified: 66 tests pass, and a device-signed build still produces `CFBundleName = Further` while keeping `CFBundleIdentifier = com.forward.ForwardApp`, so the app installs over the existing one and keeps its data.
+  - The xcconfig variables become `FURTHER_TEAM_ID` / `FURTHER_BUNDLE_ID` / `FURTHER_ICLOUD_CONTAINER`, and the committed placeholder is now `com.example.Further`. The git-ignored `Config/Local.xcconfig` keeps the author's real, unchanged identity.
+  - **Open:** whether to move to a `Further` bundle id and container. Doing so requires exporting a backup first, then importing after the first launch of the renamed app. Until then the identifiers read Forward while everything else reads Further, which is inconsistent but safe.
+
 ### D-052 — Set completion advances focus to the next set's weight field
 - **Decision:** Tapping a set's complete button moves keyboard focus to the *next* unlogged, non-skipped set's weight field. When no sets remain, focus drops and the next exercise with remaining sets expands and scrolls into view. Focus state lives on `ExpandedExerciseSection` (shared `@FocusState<SetFieldFocus?>` passed into each `WorkSetRow` as a binding), not inside the row.
 - **Why:** Real-workout feedback: completing a set left the keyboard parked on the set just finished, so every set cost an extra tap to re-target. Logging should be tap-check, type, tap-check, type.
@@ -510,13 +521,13 @@ Original:
 - **Alternatives:** Trim seed to ~80; ship 584 with no coverage pass; trim to ~150.
 - **Why not:** Trimming reintroduces the "did we miss something" risk; skipping the coverage pass leaves ugly names and broken metadata in the user's daily-use exercises.
 - **Date:** 2026-09-06
-- **Impact:** Coverage-pass edits are recorded directly in `Forward/Resources/exercises.json` (not in the transformation script — that stays pure). If we ever re-run the transformation, we'd need to re-apply the coverage edits (documented in a manifest, TBD when we do the actual pass). Modifies RISK-001: risk is now "quality of search results on the user's active exercises" rather than "missing exercises."
+- **Impact:** Coverage-pass edits are recorded directly in `Further/Resources/exercises.json` (not in the transformation script — that stays pure). If we ever re-run the transformation, we'd need to re-apply the coverage edits (documented in a manifest, TBD when we do the actual pass). Modifies RISK-001: risk is now "quality of search results on the user's active exercises" rather than "missing exercises."
 
 ### D-036 — Exercise DB taxonomy (finalized enum values) · **Superseded by D-046 (2026-09-07)**
 The original text is preserved below for audit. See D-046 for the current taxonomy.
 
 Original: 
-- **Decision:** Forward's exercise taxonomy uses these enum values:
+- **Decision:** Further's exercise taxonomy uses these enum values:
   - **MuscleGroup (13):** chest, back, lats, shoulders, biceps, triceps, quads, hamstrings, glutes, calves, core, forearms, traps.
   - **Equipment (8):** barbell, dumbbell, cable, machine, bodyweight, kettlebell, band, ezBar.
   - **MovementPattern (7):** push, pull, squat, hinge, lunge, carry, isolate.
@@ -549,7 +560,7 @@ Original:
 - **Alternatives:** No HealthKit in V1; write + read body weight; fuller integration with per-set samples.
 - **Why not:** Skipping loses Activity ring credit; adding body-weight reads adds a second permission scope for marginal V1 value; per-set samples are diminishing returns for the code cost.
 - **Date:** 2026-09-06
-- **Impact:** Adds HealthKit entitlement to `Forward.entitlements`. Introduces a `HealthKitWorkoutWriter` (or equivalent) module. Requires graceful denial handling. Body-weight read stays in the parking lot.
+- **Impact:** Adds HealthKit entitlement to `Further.entitlements`. Introduces a `HealthKitWorkoutWriter` (or equivalent) module. Requires graceful denial handling. Body-weight read stays in the parking lot.
 
 ### D-027 — History screen: chronological session list
 - **Decision:** History tab is a chronological list of past sessions (most recent first). Each row: date, template name, summary (exercise count + total sets + duration), PR badge if applicable. Tap → session detail showing every exercise with all sets, PR markers, notes, and Edit/Delete in a menu. Delete also via swipe on the list row. No calendar view, no filter, no mid-workout "see history" affordance in V1.

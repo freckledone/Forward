@@ -1,7 +1,7 @@
 import Testing
 import SwiftData
 import Foundation
-@testable import Forward
+@testable import Further
 
 @MainActor
 @Suite("ProgressCalculator")
